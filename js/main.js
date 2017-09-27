@@ -34,7 +34,7 @@
 
   showElement(screenNumber);
 
-  document.addEventListener('keydown', function (evt) {
+  document.addEventListener(`keydown`, function (evt) {
     if (evt.keyCode === 39 && evt.altKey) {
       switchScreens(`right`);
     } else if (evt.keyCode === 37 && evt.altKey) {
