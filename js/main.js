@@ -2,12 +2,21 @@
   const template = document.querySelector(`#templates`).content.cloneNode(true);
   const screens = template.querySelectorAll(`.main`);
 
-  const mainScreens = [];
-  screens.forEach(function (it) {
-    if (it.classList.contains(`main--welcome`) || it.classList.contains(`main--level`)) {
-      mainScreens.push(it);
-    }
-  });
+  const asc = function (field) {
+    return function (a, b) {
+      if (a[field] > b[field]) {
+        return 1;
+      } else if (a[field] < b[field]) {
+        return -1;
+      } else {
+        return 0;
+      }
+    };
+  };
+
+  let sortedScreens = [].slice.call(screens).sort(asc(`className`));
+
+  sortedScreens.unshift(sortedScreens.pop());
 
   let screenNumber = 0;
 
@@ -15,7 +24,7 @@
     const fragment = document.createDocumentFragment();
     const screen = document.querySelector(`.main`);
     const mainScreen = screen.querySelector(`.main`);
-    const newScreen = fragment.appendChild(mainScreens[number]);
+    const newScreen = fragment.appendChild(sortedScreens[number]);
 
     if (mainScreen) {
       screen.replaceChild(newScreen, mainScreen);
@@ -25,7 +34,7 @@
   };
 
   const switchScreens = (direction) => {
-    if (direction === `right` && screenNumber < mainScreens.length - 1) {
+    if (direction === `right` && screenNumber < sortedScreens.length - 1) {
       showElement(++screenNumber);
     } else if (direction === `left` && screenNumber > 0) {
       showElement(--screenNumber);
@@ -42,4 +51,3 @@
     }
   });
 })();
-
