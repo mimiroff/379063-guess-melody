@@ -1,5 +1,6 @@
 import getElementFromTemplate from './create-DOM-element';
-import {screens} from './show-element';
+import {screens, showElement} from './show-element';
+import genreScreen from './genre';
 
 let element;
 
@@ -12,4 +13,10 @@ for (let i = 0; i < screens.length; i++) {
 const stringElement = element.outerHTML;
 
 const artistScreen = getElementFromTemplate(stringElement);
-export default artistScreen;
+export {artistScreen};
+export const onArtistListClick = (evt) => {
+  if (evt.target.className === `main-answer-preview` || evt.target.className === `main-answer`
+    || evt.target.className === `main-answer-r`) {
+    showElement(genreScreen);
+  }
+};
