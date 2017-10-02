@@ -1,25 +1,26 @@
 import getElementFromTemplate from './create-DOM-element';
-import {showElement, screens} from './show-element';
-import {createArtistScreen, onArtistListClick} from "./artist";
+import showElement from './show-element';
+import createArtistScreen from "./artist";
 
-let element;
-
-for (const screen of screens) {
-  if (screen.classList.contains(`main--welcome`)) {
-    element = screen;
-  }
-}
-
-const stringElement = element.outerHTML;
+const element = `<section class="main main--welcome">
+    <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
+    <button class="main-play">Начать игру</button>
+    <h2 class="title main-title">Правила игры</h2>
+    <p class="text main-text">
+      Правила просты&nbsp;— за&nbsp;5 минут ответить на все вопросы.<br>
+      Ошибиться можно 3 раза.<br>
+      Удачи!
+    </p>
+  </section>`;
 
 const createWelcomeScreen = () => {
-  return getElementFromTemplate(stringElement);
+  showElement(getElementFromTemplate(element));
+  const playButton = document.querySelector(`.main-play`);
+  playButton.addEventListener(`click`, onPlayButtonClick);
 };
 
 const onPlayButtonClick = () => {
-  showElement(createArtistScreen());
-  const artistList = document.querySelector(`.main-list`);
-  artistList.addEventListener(`click`, onArtistListClick);
+  createArtistScreen();
 };
 
-export {createWelcomeScreen, onPlayButtonClick};
+export default createWelcomeScreen;

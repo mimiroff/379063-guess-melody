@@ -1,46 +1,77 @@
 import getElementFromTemplate from './create-DOM-element';
-import {screens, showElement} from './show-element';
-import {createGenreScreen, onSubmitButtonClick} from './genre';
+import showElement from './show-element';
+import createGenreScreen from './genre';
 
-let element;
+const element = `<section class="main main--level main--level-artist">
+    <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
+      <circle
+        cx="390" cy="390" r="370"
+        class="timer-line"
+        style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
 
-for (const screen of screens) {
-  if (screen.classList.contains(`main--level-artist`)) {
-    element = screen;
-  }
-}
+      <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
+        <span class="timer-value-mins">05</span><!--
+        --><span class="timer-value-dots">:</span><!--
+        --><span class="timer-value-secs">00</span>
+      </div>
+    </svg>
+    <div class="main-mistakes">
+      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
+      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
+    </div>
 
-const stringElement = element.outerHTML;
+    <div class="main-wrap">
+      <h2 class="title main-title">Кто исполняет эту песню?</h2>
+      <div class="player-wrapper">
+        <div class="player">
+          <audio></audio>
+          <button class="player-control player-control--pause"></button>
+          <div class="player-track">
+            <span class="player-status"></span>
+          </div>
+        </div>
+      </div>
+      <form class="main-list">
+        <div class="main-answer-wrapper">
+          <input class="main-answer-r" type="radio" id="answer-1" name="answer" value="val-1"/>
+          <label class="main-answer" for="answer-1">
+            <img class="main-answer-preview" src="http://placehold.it/134x134"
+                 alt="Пелагея" width="134" height="134">
+            Пелагея
+          </label>
+        </div>
+
+        <div class="main-answer-wrapper">
+          <input class="main-answer-r" type="radio" id="answer-2" name="answer" value="val-2"/>
+          <label class="main-answer" for="answer-2">
+            <img class="main-answer-preview" src="http://placehold.it/134x134"
+                 alt="Краснознаменная дивизия имени моей бабушки" width="134" height="134">
+            Краснознаменная дивизия имени моей бабушки
+          </label>
+        </div>
+
+        <div class="main-answer-wrapper">
+          <input class="main-answer-r" type="radio" id="answer-3" name="answer" value="val-3"/>
+          <label class="main-answer" for="answer-3">
+            <img class="main-answer-preview" src="http://placehold.it/134x134"
+                 alt="Lorde" width="134" height="134">
+            Lorde
+          </label>
+        </div>
+      </form>
+    </div>
+  </section>`;
 
 const createArtistScreen = () => {
-  return getElementFromTemplate(stringElement);
+  showElement(getElementFromTemplate(element));
+  const artistList = document.querySelector(`.main-list`);
+  artistList.addEventListener(`click`, onArtistListClick);
 };
 
 const onArtistListClick = (evt) => {
   if (evt.target.className === `main-answer-r`) {
-    showElement(createGenreScreen());
-    const answerForm = document.querySelector(`.genre`);
-    const submitButton = answerForm.querySelector(`.genre-answer-send`);
-    const checkboxes = answerForm.querySelectorAll(`[type='checkbox']`);
-    let checked = 0;
-
-    submitButton.setAttribute(`disabled`, ``);
-    Array.from(checkboxes, (it) => {
-      it.addEventListener(`click`, (e) => {
-        if (e.currentTarget.checked) {
-          checked++;
-        } else if (!e.currentTarget.checked) {
-          checked--;
-        }
-        if (checked > 0) {
-          submitButton.removeAttribute(`disabled`);
-        } else {
-          submitButton.setAttribute(`disabled`, ``);
-        }
-      });
-    });
-    submitButton.addEventListener(`click`, onSubmitButtonClick);
+    createGenreScreen();
   }
 };
 
-export {createArtistScreen, onArtistListClick};
+export default createArtistScreen;

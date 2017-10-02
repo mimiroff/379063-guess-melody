@@ -1,23 +1,25 @@
 import getElementFromTemplate from './create-DOM-element';
-import {screens, showElement} from './show-element';
-import {onPlayButtonClick, createWelcomeScreen} from './welcome';
+import showElement from './show-element';
+import createWelcomeScreen from './welcome';
 
-let element;
-
-for (const screen of screens) {
-  if (screen.textContent.includes(`Вы настоящий меломан!`)) {
-    element = screen;
-  }
-}
-
-const stringElement = element.outerHTML;
+const element = `<section class="main main--result">
+    <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
+    <h2 class="title">Вы настоящий меломан!</h2>
+    <div class="main-stat">За&nbsp;3&nbsp;минуты и 25&nbsp;секунд
+      <br>вы&nbsp;набрали 12 баллов (8 быстрых)
+      <br>совершив 3 ошибки</div>
+    <span class="main-comparison">Вы заняли 2 место из 10. Это&nbsp;лучше чем у&nbsp;80%&nbsp;игроков</span>
+    <span role="button" tabindex="0" class="main-replay">Сыграть ещё раз</span>
+  </section>`;
 
 const createResult1Screen = () => {
-  return getElementFromTemplate(stringElement);
+  showElement(getElementFromTemplate(element));
+  const replayButton = document.querySelector(`.main-replay`);
+  replayButton.addEventListener(`click`, onReplayButtonClick);
 };
-const onReplayButtonClickR1 = () => {
-  showElement(createWelcomeScreen());
-  const playButton = document.querySelector(`.main-play`);
-  playButton.addEventListener(`click`, onPlayButtonClick);
+
+const onReplayButtonClick = () => {
+  createWelcomeScreen();
 };
-export {createResult1Screen, onReplayButtonClickR1};
+
+export default createResult1Screen;

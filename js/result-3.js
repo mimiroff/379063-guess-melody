@@ -1,23 +1,22 @@
 import getElementFromTemplate from './create-DOM-element';
-import {screens, showElement} from './show-element';
-import {onPlayButtonClick, createWelcomeScreen} from './welcome';
+import showElement from './show-element';
+import createWelcomeScreen from './welcome';
 
-let element;
-
-for (const screen of screens) {
-  if (screen.textContent.includes(`Какая жалость!`)) {
-    element = screen;
-  }
-}
-
-const stringElement = element.outerHTML;
+const element = `<section class="main main--result">
+    <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
+    <h2 class="title">Какая жалость!</h2>
+    <div class="main-stat">У вас закончились все попытки.<br>Ничего, повезёт в следующий раз!</div>
+    <span role="button" tabindex="0" class="main-replay">Попробовать ещё раз</span>
+  </section>`;
 
 const createResult3Screen = () => {
-  return getElementFromTemplate(stringElement);
+  showElement(getElementFromTemplate(element));
+  const replayButton = document.querySelector(`.main-replay`);
+  replayButton.addEventListener(`click`, onReplayButtonClick);
 };
-const onReplayButtonClickR3 = () => {
-  showElement(createWelcomeScreen());
-  const playButton = document.querySelector(`.main-play`);
-  playButton.addEventListener(`click`, onPlayButtonClick);
+
+const onReplayButtonClick = () => {
+  createWelcomeScreen();
 };
-export {createResult3Screen, onReplayButtonClickR3};
+
+export default createResult3Screen;
