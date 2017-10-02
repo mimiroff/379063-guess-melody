@@ -1,15 +1,23 @@
 import getElementFromTemplate from './create-DOM-element';
-import {screens} from './show-element';
+import {screens, showElement} from './show-element';
+import {onPlayButtonClick, createWelcomeScreen} from './welcome';
 
 let element;
 
-for (let i = 0; i < screens.length; i++) {
-  if (screens[i].textContent.includes(`Какая жалость!`)) {
-    element = screens[i];
+for (const screen of screens) {
+  if (screen.textContent.includes(`Какая жалость!`)) {
+    element = screen;
   }
 }
 
 const stringElement = element.outerHTML;
 
-const resultThreeScreen = getElementFromTemplate(stringElement);
-export default resultThreeScreen;
+const createResult3Screen = () => {
+  return getElementFromTemplate(stringElement);
+};
+const onReplayButtonClickR3 = () => {
+  showElement(createWelcomeScreen());
+  const playButton = document.querySelector(`.main-play`);
+  playButton.addEventListener(`click`, onPlayButtonClick);
+};
+export {createResult3Screen, onReplayButtonClickR3};

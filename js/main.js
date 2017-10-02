@@ -1,10 +1,8 @@
-
 import {showElement} from './show-element';
-import {welcomeScreen, onPlayButtonClick} from "./welcome";
+import {onPlayButtonClick, createWelcomeScreen} from './welcome';
 
 
-showElement(welcomeScreen);
+showElement(createWelcomeScreen());
 
 const playButton = document.querySelector(`.main-play`);
 playButton.addEventListener(`click`, onPlayButtonClick);
-
