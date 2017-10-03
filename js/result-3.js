@@ -1,0 +1,22 @@
+import getElementFromTemplate from './create-DOM-element';
+import showElement from './show-element';
+import createWelcomeScreen from './welcome';
+
+const element = `<section class="main main--result">
+    <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
+    <h2 class="title">Какая жалость!</h2>
+    <div class="main-stat">У вас закончились все попытки.<br>Ничего, повезёт в следующий раз!</div>
+    <span role="button" tabindex="0" class="main-replay">Попробовать ещё раз</span>
+  </section>`;
+
+const createResult3Screen = () => {
+  showElement(getElementFromTemplate(element));
+  const replayButton = document.querySelector(`.main-replay`);
+  replayButton.addEventListener(`click`, onReplayButtonClick);
+};
+
+const onReplayButtonClick = () => {
+  createWelcomeScreen();
+};
+
+export default createResult3Screen;
