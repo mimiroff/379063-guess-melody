@@ -33,5 +33,11 @@ describe(`Game result generation`, () => {
                 score: 8, notes: 1, timeLeft: 10
               }));
         });
+    it(`should throw an error when wrong type of first argument has been passed to function`, () => {
+      assert.throws(generateGameResult.bind(generateGameResult, 1, {}));
+    });
+    it(`should throw an error when wrong type of second argument has been passed to function`, () => {
+      assert.throws(generateGameResult.bind(generateGameResult, [1], true));
+    });
   });
 });

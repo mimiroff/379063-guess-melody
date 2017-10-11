@@ -1,4 +1,7 @@
 const generateGameResult = (othersResults, selfResults) => {
+  if (typeof selfResults !== `object` || !Array.isArray(othersResults)) {
+    throw new Error(`Wrong argument type`);
+  }
   const score = selfResults.score;
   const notes = selfResults.notes;
   const timeLeft = selfResults.timeLeft;

@@ -10,7 +10,7 @@ describe(`Count Function`, () => {
         {answer: true, fast: false}, {answer: false, fast: false}], 1));
     });
     it(`should return -1 if number of answers is less then 10`, () => {
-      assert.equal(-1, countGameResult([true, true, false, true, false]));
+      assert.equal(-1, countGameResult([true, true, false, true, false], 1));
     });
     it(`should return 12 if 10 answers is true and 2 is fast without any mistake`, () => {
       assert.equal(12, countGameResult([{answer: true, fast: false}, {answer: true, fast: true},
@@ -35,6 +35,12 @@ describe(`Count Function`, () => {
         {answer: true, fast: true}, {answer: true, fast: true}, {answer: true, fast: true},
         {answer: true, fast: false}, {answer: true, fast: false}, {answer: true, fast: false},
         {answer: false, fast: false}, {answer: false, fast: false}], 2));
+    });
+    it(`should throw an error when wrong type of first argument has been passed to function`, () => {
+      assert.throws(countGameResult.bind(countGameResult, `true`, 2));
+    });
+    it(`should throw an error when wrong type of second argument has been passed to function`, () => {
+      assert.throws(countGameResult.bind(countGameResult, [], `1`));
     });
   });
 });

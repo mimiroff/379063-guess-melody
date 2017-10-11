@@ -1,4 +1,7 @@
 const countGameResult = (answers, notes) => {
+  if (!Array.isArray(answers) || typeof notes !== `number`) {
+    throw new Error(`Wrong argument type`);
+  }
   const ANSWERS_NORM = 10;
   const MISTAKE_MULT = 2;
   const mistakesCredits = notes * MISTAKE_MULT;
