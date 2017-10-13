@@ -1,20 +1,19 @@
 import getElementFromTemplate from './create-DOM-element';
 import showElement from './show-element';
+import {welcomeData} from './data';
 import createArtistScreen from "./artist";
 
-const element = `<section class="main main--welcome">
-    <section class="logo" title="Угадай мелодию"><h1>Угадай мелодию</h1></section>
+const element = (data) => `<section class="main main--welcome">
+    <section class="logo" title="${data.gameName}"><h1>${data.gameName}</h1></section>
     <button class="main-play">Начать игру</button>
-    <h2 class="title main-title">Правила игры</h2>
+    <h2 class="title main-title">${data.title}</h2>
     <p class="text main-text">
-      Правила просты&nbsp;— за&nbsp;5 минут ответить на все вопросы.<br>
-      Ошибиться можно 3 раза.<br>
-      Удачи!
+      ${data.rules}
     </p>
   </section>`;
 
 const createWelcomeScreen = () => {
-  showElement(getElementFromTemplate(element));
+  showElement(getElementFromTemplate(element(welcomeData)));
   const playButton = document.querySelector(`.main-play`);
   playButton.addEventListener(`click`, onPlayButtonClick);
 };
