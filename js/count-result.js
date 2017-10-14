@@ -1,24 +1,29 @@
-const countGameResult = (answers, notes) => {
-  if (!Array.isArray(answers) || typeof notes !== `number`) {
+import generateGameResult from './generate-result';
+
+const countGameResult = (answers, mistakes) => {
+  if (!Array.isArray(answers) || typeof mistakes !== `number`) {
     throw new Error(`Wrong argument type`);
   }
-  const ANSWERS_NORM = 10;
   const MISTAKE_MULT = 2;
-  const mistakesCredits = notes * MISTAKE_MULT;
+  const mistakesCredits = mistakes * MISTAKE_MULT;
   const gameAnswers = answers;
-  let credits = 0;
-  if (gameAnswers.length < ANSWERS_NORM || notes > 3) {
-    return -1;
-  }
+  const result = {
+    score: 0,
+    fast: 0,
+    mistakes,
+    timeLeft: 300
+  };
+
   gameAnswers.map((it)=> {
     if (it.answer === true && it.fast === true) {
-      credits += 2;
+      result.score += 2;
+      result.fast++;
     } else if (it.answer === true) {
-      credits++;
+      result.score++;
     }
   });
-  credits -= mistakesCredits;
-  return credits;
+  result.score -= mistakesCredits;
+  generateGameResult(result);
 };
 
 export default countGameResult;

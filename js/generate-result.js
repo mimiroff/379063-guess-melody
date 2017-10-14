@@ -1,16 +1,37 @@
-const generateGameResult = (othersResults, selfResults) => {
-  if (typeof selfResults !== `object` || !Array.isArray(othersResults)) {
+import resultScreenData from './result-screen-data';
+import createResultScreen from './result-screen';
+
+let getMinutes = (timeLeft) => {
+  let time = Math.floor(timeLeft / 60);
+  return time < 10 ? `0${time}` : time;
+};
+
+let getSeconds = (timeLeft) => {
+  let time = timeLeft % 60;
+  return time < 10 ? `0${time}` : time;
+};
+
+const generateGameResult = (selfResults, othersResults) => {
+  if (typeof selfResults !== `object`) {
     throw new Error(`Wrong argument type`);
   }
   const score = selfResults.score;
-  const notes = selfResults.notes;
+  const fast = selfResults.fast;
+  const mistakes = selfResults.mistakes;
   const timeLeft = selfResults.timeLeft;
-  const results = othersResults;
-  let resultString;
+  const results = othersResults ? othersResults : [];
+  const ENDINGS = {
+    minutes: ``,
+    seconds: ``,
+    score: `ов`,
+    fast: `ых`,
+    mistakes: `ок`,
+    players: `ов`
+  };
+
   let place;
   let players;
   let percent;
-  let ending = `ов`;
 
   const asc = (a, b) => {
     if (a > b) {
@@ -27,17 +48,66 @@ const generateGameResult = (othersResults, selfResults) => {
   place = results.length - results.indexOf(score);
   players = results.length;
   percent = Math.round(((players - place) / players) * 100);
+
   if (players.toString().lastIndexOf(1) > -1 && players !== 11) {
-    ending = `а`;
+    ENDINGS.players = `а`;
+  }
+  if (timeLeft / 60 < 10 || timeLeft / 60 > 20 && getSeconds(timeLeft).lastIndexOf(1) !== -1) {
+    ENDINGS.minutes = `у`;
+  } else if (timeLeft / 60 < 10 || timeLeft / 60 > 20 && getSeconds(timeLeft).lastIndexOf(2) !== -1) {
+    ENDINGS.minutes = `ы`;
+  } else if (timeLeft / 60 < 10 || timeLeft / 60 > 20 && getSeconds(timeLeft).lastIndexOf(3) !== -1) {
+    ENDINGS.minutes = `ы`;
+  } else if (timeLeft / 60 < 10 || timeLeft / 60 > 20 && getSeconds(timeLeft).lastIndexOf(4) !== -1) {
+    ENDINGS.minutes = `ы`;
+  }
+
+  if (timeLeft % 60 < 10 || timeLeft % 60 > 20 && getSeconds(timeLeft).lastIndexOf(1) !== -1) {
+    ENDINGS.seconds = `у`;
+  } else if (timeLeft % 60 < 10 || timeLeft % 60 > 20 && getSeconds(timeLeft).lastIndexOf(2) !== -1) {
+    ENDINGS.seconds = `ы`;
+  } else if (timeLeft % 60 < 10 || timeLeft % 60 > 20 && getSeconds(timeLeft).lastIndexOf(3) !== -1) {
+    ENDINGS.seconds = `ы`;
+  } else if (timeLeft % 60 < 10 || timeLeft % 60 > 20 && getSeconds(timeLeft).lastIndexOf(4) !== -1) {
+    ENDINGS.seconds = `ы`;
+  }
+
+  if (score < 10 || score > 20 && score.toString().lastIndexOf(1) !== -1) {
+    ENDINGS.score = ``;
+  } else if (score < 10 || score > 20 && score.toString().lastIndexOf(2) !== -1) {
+    ENDINGS.score = `а`;
+  } else if (score < 10 || score > 20 && score.toString().lastIndexOf(3) !== -1) {
+    ENDINGS.score = `а`;
+  } else if (score < 10 || score > 20 && score.toString().lastIndexOf(4) !== -1) {
+    ENDINGS.score = `а`;
+  }
+
+  if (fast < 10 || fast > 20 && fast.toString().lastIndexOf(1) !== -1) {
+    ENDINGS.fast = `ый`;
+  }
+
+  if (mistakes < 10 || mistakes > 20 && mistakes.toString().lastIndexOf(1) !== -1) {
+    ENDINGS.mistakes = `ка`;
+  } else if (mistakes < 10 || mistakes > 20 && mistakes.toString().lastIndexOf(2) !== -1) {
+    ENDINGS.mistakes = `ки`;
+  } else if (mistakes < 10 || mistakes > 20 && mistakes.toString().lastIndexOf(3) !== -1) {
+    ENDINGS.mistakes = `ки`;
+  } else if (mistakes < 10 || mistakes > 20 && mistakes.toString().lastIndexOf(4) !== -1) {
+    ENDINGS.mistakes = `ки`;
   }
 
   switch (true) {
-    case timeLeft <= 0: resultString = `Время вышло! Вы не успели отгадать все мелодии`;
+    case timeLeft <= 0: createResultScreen(`timeUp`);
       break;
-    case notes <= 0: resultString = `У вас закончились все попытки. Ничего, повезёт в следующий раз!`;
+    case mistakes > 3: createResultScreen(`noTries`);
       break;
-    default: resultString = `Вы заняли ${place}-ое место из ${players} игрок${ending}. Это лучше чем у ${percent}% игроков`;
+    default: {
+      resultScreenData.win.statistics = `За ${getMinutes(timeLeft)} минут${ENDINGS.minutes} и ${getSeconds(timeLeft)} секунд${ENDINGS.seconds} вы набрали<br/>
+    ${score} балл${ENDINGS.score} (${fast} быстр${ENDINGS.fast})<br/>
+    совершив ${mistakes} ошиб${ENDINGS.mistakes}`;
+      resultScreenData.win.comparison = `Вы заняли ${place}-ое место из ${players} игрок${ENDINGS.players}. Это лучше чем у ${percent}% игроков`;
+      createResultScreen(`win`);
+    }
   }
-  return resultString;
 };
 export default generateGameResult;

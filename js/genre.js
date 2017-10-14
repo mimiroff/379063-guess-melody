@@ -1,112 +1,81 @@
 import getElementFromTemplate from './create-DOM-element';
 import showElement from './show-element';
-import createResult1Screen from './result-1';
-import createResult2Screen from './result-2';
-import createResult3Screen from './result-3';
+import headerTemplate from './header';
+import {initialState} from './data';
+import countGameResult from './count-result';
+import {generateGenreQuestion} from './genre-screen-data';
+import createArtistScreen from './artist';
 
-const element = `<section class="main main--level main--level-genre">
-    <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
-      <circle
-        cx="390" cy="390" r="370"
-        class="timer-line"
-        style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
+const generateAnswerTemplate = (state) => {
 
-      <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
-        <span class="timer-value-mins">05</span><!--
-        --><span class="timer-value-dots">:</span><!--
-        --><span class="timer-value-secs">00</span>
-      </div>
-    </svg>
-    <div class="main-mistakes">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-    </div>
+  const templates = [];
 
-    <div class="main-wrap">
-      <h2 class="title">Выберите инди-рок треки</h2>
-      <form class="genre">
-        <div class="genre-answer">
+  state.answers.map((it, i) => {
+    templates.push(`<div class="genre-answer">
           <div class="player-wrapper">
             <div class="player">
-              <audio></audio>
+              <audio src="${it.src}" controls></audio>
               <button class="player-control player-control--pause"></button>
               <div class="player-track">
                 <span class="player-status"></span>
               </div>
             </div>
           </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-1">
-          <label class="genre-answer-check" for="a-1"></label>
-        </div>
+          <input type="checkbox" name="answer" value="${it.isCorrect}" id="a-${i + 1}">
+          <label class="genre-answer-check" for="a-${i + 1}"></label>
+        </div>`);
+  });
+  return templates.join(``);
+};
 
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-2">
-          <label class="genre-answer-check" for="a-2"></label>
-        </div>
-
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-3">
-          <label class="genre-answer-check" for="a-3"></label>
-        </div>
-
-        <div class="genre-answer">
-          <div class="player-wrapper">
-            <div class="player">
-              <audio></audio>
-              <button class="player-control player-control--play"></button>
-              <div class="player-track">
-                <span class="player-status"></span>
-              </div>
-            </div>
-          </div>
-          <input type="checkbox" name="answer" value="answer-1" id="a-4">
-          <label class="genre-answer-check" for="a-4"></label>
-        </div>
-
+const screenTemplate = (state) => `<section class="main main--level main--level-genre">
+${headerTemplate(initialState)}
+    <div class="main-wrap">
+      <h2 class="title">Выберите ${state.genre} треки</h2>
+      <form class="genre">
+        ${generateAnswerTemplate(state)}
         <button class="genre-answer-send" type="submit">Ответить</button>
       </form>
     </div>
   </section>`;
 
-const getRandomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min)) + min;
+const answersStack = {
+  _answers: new Set(),
+  get answers() {
+    return this._answers;
+  },
+  get size() {
+    return this._answers.size;
+  },
+  clear() {
+    this._answers.clear();
+  },
+  add(data) {
+    this._answers.add(data);
+  },
+  delete(data) {
+    this._answers.delete(data);
+  }
 };
 
 const createGenreScreen = () => {
-  showElement(getElementFromTemplate(element));
+  initialState.nextLevel();
+  answersStack.clear();
+  showElement(getElementFromTemplate(screenTemplate(generateGenreQuestion(4))));
   const answerForm = document.querySelector(`.genre`);
   const submitButton = answerForm.querySelector(`.genre-answer-send`);
   const checkboxes = answerForm.querySelectorAll(`[type='checkbox']`);
-  let checked = 0;
 
   submitButton.setAttribute(`disabled`, ``);
+
   Array.from(checkboxes, (it) => {
     it.addEventListener(`click`, (e) => {
       if (e.currentTarget.checked) {
-        checked++;
+        answersStack.add(e.currentTarget);
       } else if (!e.currentTarget.checked) {
-        checked--;
+        answersStack.delete(e.currentTarget);
       }
-      if (checked > 0) {
+      if (answersStack.size > 0) {
         submitButton.removeAttribute(`disabled`);
       } else {
         submitButton.setAttribute(`disabled`, ``);
@@ -118,13 +87,21 @@ const createGenreScreen = () => {
 
 const onSubmitButtonClick = (evt) => {
   evt.preventDefault();
-  const dice = getRandomInt(0, 3);
-  if (dice === 0) {
-    createResult1Screen();
-  } else if (dice === 1) {
-    createResult2Screen();
+  let answers = [...answersStack.answers].map((it) => {
+    return it.value;
+  });
+
+  if (answers.includes(`false`)) {
+    initialState.addAnswer({answer: false, fast: false});
+    initialState.addMistake();
   } else {
-    createResult3Screen();
+    initialState.addAnswer({answer: true, fast: false});
+  }
+
+  if (initialState.mistakes <= 3 && initialState.level < 10) {
+    createArtistScreen();
+  } else {
+    countGameResult(initialState.answers, initialState.mistakes);
   }
 };
 

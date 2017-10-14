@@ -1,30 +1,35 @@
 import getElementFromTemplate from './create-DOM-element';
 import showElement from './show-element';
+import headerTemplate from './header';
 import createGenreScreen from './genre';
+import {initialState} from './data';
+import {generateArtistQuestion} from './artist-screen-data';
+import countGameResult from './count-result';
 
-const element = `<section class="main main--level main--level-artist">
-    <svg xmlns="http://www.w3.org/2000/svg" class="timer" viewBox="0 0 780 780">
-      <circle
-        cx="390" cy="390" r="370"
-        class="timer-line"
-        style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center"></circle>
+const generateAnswerTemplate = (state) => {
 
-      <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
-        <span class="timer-value-mins">05</span><!--
-        --><span class="timer-value-dots">:</span><!--
-        --><span class="timer-value-secs">00</span>
-      </div>
-    </svg>
-    <div class="main-mistakes">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-      <img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">
-    </div>
+  const templates = [];
 
+  state.answers.map((it, i) => {
+    templates.push(`<div class="main-answer-wrapper">
+          <input class="main-answer-r" type="radio" id="answer-${i + 1}" name="answer" value="${it.isCorrect}"/>
+          <label class="main-answer" for="answer-${i + 1}">
+            <img class="main-answer-preview" src="${it.image}"
+                 alt="${it.artist}" width="134" height="134">
+            ${it.artist}
+          </label>
+        </div>`);
+  });
+  return templates.join(``);
+};
+
+const screenTemplate = (state) => `<section class="main main--level main--level-artist">
+      ${headerTemplate(initialState)}
     <div class="main-wrap">
       <h2 class="title main-title">Кто исполняет эту песню?</h2>
       <div class="player-wrapper">
         <div class="player">
-          <audio></audio>
+          <audio src="${state.src}" autoplay></audio>
           <button class="player-control player-control--pause"></button>
           <div class="player-track">
             <span class="player-status"></span>
@@ -32,45 +37,31 @@ const element = `<section class="main main--level main--level-artist">
         </div>
       </div>
       <form class="main-list">
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-1" name="answer" value="val-1"/>
-          <label class="main-answer" for="answer-1">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
-                 alt="Пелагея" width="134" height="134">
-            Пелагея
-          </label>
-        </div>
-
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-2" name="answer" value="val-2"/>
-          <label class="main-answer" for="answer-2">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
-                 alt="Краснознаменная дивизия имени моей бабушки" width="134" height="134">
-            Краснознаменная дивизия имени моей бабушки
-          </label>
-        </div>
-
-        <div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-3" name="answer" value="val-3"/>
-          <label class="main-answer" for="answer-3">
-            <img class="main-answer-preview" src="http://placehold.it/134x134"
-                 alt="Lorde" width="134" height="134">
-            Lorde
-          </label>
-        </div>
+      ${generateAnswerTemplate(state)}        
       </form>
     </div>
   </section>`;
 
 const createArtistScreen = () => {
-  showElement(getElementFromTemplate(element));
+  initialState.nextLevel();
+  showElement(getElementFromTemplate(screenTemplate(generateArtistQuestion(3))));
   const artistList = document.querySelector(`.main-list`);
   artistList.addEventListener(`click`, onArtistListClick);
 };
 
 const onArtistListClick = (evt) => {
   if (evt.target.className === `main-answer-r`) {
-    createGenreScreen();
+    if (evt.target.value === `true`) {
+      initialState.addAnswer({answer: true, fast: false});
+    } else {
+      initialState.addAnswer({answer: false, fast: false});
+      initialState.addMistake();
+    }
+    if (initialState.mistakes <= 3 && initialState.level < 10) {
+      createGenreScreen();
+    } else {
+      countGameResult(initialState.answers, initialState.mistakes);
+    }
   }
 };
 
