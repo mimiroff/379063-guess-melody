@@ -2,7 +2,9 @@ import getElementFromTemplate from './create-DOM-element';
 import showElement from './show-element';
 import headerTemplate from './header';
 import createGenreScreen from './genre';
-import {initialState, generateArtistQuestion, playerAnswers} from './data';
+import {initialState} from './data';
+import {generateArtistQuestion} from './artist-screen-data';
+import countGameResult from './count-result';
 
 const generateAnswerTemplate = (state) => {
 
@@ -41,14 +43,25 @@ const screenTemplate = (state) => `<section class="main main--level main--level-
   </section>`;
 
 const createArtistScreen = () => {
-  showElement(getElementFromTemplate(screenTemplate(generateArtistQuestion())));
+  initialState.nextLevel();
+  showElement(getElementFromTemplate(screenTemplate(generateArtistQuestion(3))));
   const artistList = document.querySelector(`.main-list`);
   artistList.addEventListener(`click`, onArtistListClick);
 };
 
 const onArtistListClick = (evt) => {
   if (evt.target.className === `main-answer-r`) {
-    createGenreScreen();
+    if (evt.target.value === `true`) {
+      initialState.addAnswer({answer: true, fast: false});
+    } else {
+      initialState.addAnswer({answer: false, fast: false});
+      initialState.addMistake();
+    }
+    if (initialState.mistakes <= 3 && initialState.level < 10) {
+      createGenreScreen();
+    } else {
+      countGameResult(initialState.answers, initialState.mistakes);
+    }
   }
 };
 
