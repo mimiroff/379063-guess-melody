@@ -1,4 +1,3 @@
-import generateGameResult from './generate-result';
 
 const countGameResult = (answers, mistakes) => {
   if (!Array.isArray(answers) || typeof mistakes !== `number`) {
@@ -11,7 +10,7 @@ const countGameResult = (answers, mistakes) => {
     score: 0,
     fast: 0,
     mistakes,
-    timeLeft: 300
+    timeLeft: 148
   };
 
   gameAnswers.map((it)=> {
@@ -23,8 +22,7 @@ const countGameResult = (answers, mistakes) => {
     }
   });
   result.score -= mistakesCredits;
-  generateGameResult(result);
+  return result;
 };
 
 export default countGameResult;
-

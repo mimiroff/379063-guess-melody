@@ -17,6 +17,9 @@ const initialState = {
   get answers() {
     return this._playerAnswers;
   },
+  set time(time) {
+    this._time = time;
+  },
   get time() {
     return this._time;
   },
@@ -82,4 +85,16 @@ const musicData = new Set([
   }
 ]);
 
-export {initialState, musicData};
+const welcomeData = {
+  gameName: `Угадай мелодию`,
+  title: `Правила игры`,
+  rules: `Правила просты — за 5 минут ответить на все вопросы.<br>
+          Ошибиться можно 3 раза.<br>
+          Удачи!`
+};
+
+const getWelcome = () => {
+  return welcomeData;
+};
+
+export {initialState, musicData, getWelcome};

@@ -1,47 +1,38 @@
-const setTimer = (time) => {
-  if (typeof time !== `number`) {
-    throw new Error(`Wrong argument type`);
+
+export default class Timer {
+  set time(time) {
+    this._time = time;
   }
-  if (time === 0) {
-    return {
-      time,
-      tick() {
-        if (time > 0) {
-          return setTimer(time - 1);
-        } else {
-          return setTimer(time);
-        }
-      },
-      reset() {
-        return setTimer(300);
-      },
-      massage: `Time is up!`
-    };
-  } else {
-    return {
-      time,
-      tick() {
-        if (time > 0) {
-          return setTimer(time - 1);
-        } else {
-          return setTimer(time);
-        }
-      },
-      reset() {
-        return setTimer(300);
+
+  get time() {
+    return this._time;
+  }
+
+  reset() {
+    this.time = 300;
+  }
+
+  tick() {
+    this.time--;
+  }
+
+  onTick() {
+    console.log(this.time);
+    return this.time;
+  }
+
+  start() {
+    this.reset();
+    this.interval = setInterval(() => {
+      this.tick();
+      this.onTick();
+      if (this.time === 0) {
+        this.stop();
       }
-    };
+    }, 1000);
   }
-};
 
-const startTimer = (time) => {
-  let timer = setTimer(time);
-  const interval = setInterval(() => {
-    timer = timer.tick();
-    if (timer.massage) {
-      clearInterval(interval);
-    }
-  }, 1000);
-};
-
-export {setTimer, startTimer};
+  stop() {
+    clearInterval(this.interval);
+  }
+}
