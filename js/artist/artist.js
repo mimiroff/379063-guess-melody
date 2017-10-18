@@ -1,6 +1,6 @@
 import {initialState} from '../data/data';
 import ArtistView from './artist-view';
-import {showScreen} from '../util';
+import {showHeader, showScreen} from '../util';
 import getGenreScreen from '../genre/genre';
 import {generateArtistQuestion} from '../data/artist-screen-data';
 import getResultScreen from '../result/result';
@@ -25,6 +25,7 @@ const getArtistScreen = () => {
       }
       if (initialState.mistakes <= 3 && initialState.level < 10) {
         showScreen(getGenreScreen());
+        showHeader();
       } else {
         showScreen(getResultScreen(initialState.GAME_START_TIME - endTime));
       }

@@ -1,5 +1,5 @@
 import WelcomeView from './welcome-view';
-import {showScreen, getRandomInt} from '../util';
+import {showScreen, getRandomInt, showHeader} from '../util';
 import {getWelcome, initialState} from '../data/data';
 import getGenreScreen from '../genre/genre';
 import getArtistScreen from '../artist/artist';
@@ -18,8 +18,10 @@ const getWelcomeScreen = () => {
     const dice = getRandomInt(0, 2);
     if (dice === 0) {
       showScreen(getArtistScreen());
+      showHeader();
     } else {
       showScreen(getGenreScreen());
+      showHeader();
     }
   };
   return welcomeScreen;

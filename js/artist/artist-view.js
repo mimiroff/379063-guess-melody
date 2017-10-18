@@ -1,6 +1,5 @@
 import AbstractView from '../view';
 import getHeader from "../header/header";
-import {showScreen} from "../util";
 
 const generateAnswerTemplate = (state) => {
 
@@ -23,10 +22,10 @@ export default class ArtistView extends AbstractView {
   constructor(state, data) {
     super(state);
     this.data = data;
+    this.header = getHeader();
   }
   get template() {
     return `<section class="main main--level main--level-artist">
-${showScreen(getHeader())}
     <div class="main-wrap">
       <h2 class="title main-title">Кто исполняет эту песню?</h2>
       <div class="player-wrapper">

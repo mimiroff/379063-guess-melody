@@ -1,6 +1,4 @@
 import AbstractView from '../view';
-import getHeader from '../header/header';
-import {showScreen} from "../util";
 
 const generateAnswerTemplate = (data) => {
 
@@ -29,9 +27,9 @@ export default class GenreView extends AbstractView {
     super(state);
     this.data = data;
   }
+
   get template() {
     return `<section class="main main--level main--level-genre">
-   ${showScreen(getHeader())}
     <div class="main-wrap">
       <h2 class="title">Выберите ${this.data.genre} треки</h2>
       <form class="genre">

@@ -1,7 +1,7 @@
 import GenreView from './genre-view';
 import {generateGenreQuestion, answersStack} from '../data/genre-screen-data';
 import {initialState} from '../data/data';
-import {showScreen} from '../util';
+import {showHeader, showScreen} from '../util';
 import getArtistScreen from '../artist/artist';
 import getResultScreen from '../result/result';
 
@@ -44,6 +44,7 @@ const getGenreScreen = () => {
 
     if (initialState.mistakes <= 3 && initialState.level < 10) {
       showScreen(getArtistScreen());
+      showHeader();
     } else {
       showScreen(getResultScreen(timePast));
     }
