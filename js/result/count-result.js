@@ -1,5 +1,5 @@
 
-const countGameResult = (answers, mistakes) => {
+const countGameResult = (answers, mistakes, time) => {
   if (!Array.isArray(answers) || typeof mistakes !== `number`) {
     throw new Error(`Wrong argument type`);
   }
@@ -10,7 +10,7 @@ const countGameResult = (answers, mistakes) => {
     score: 0,
     fast: 0,
     mistakes,
-    timeLeft: 148
+    timePast: time
   };
 
   gameAnswers.map((it)=> {

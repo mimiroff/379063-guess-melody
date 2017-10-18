@@ -9,6 +9,10 @@ const drawComparison = (data) => {
 };
 
 export default class ResultView extends AbstractView {
+  constructor(state, data) {
+    super(state);
+    this.data = data;
+  }
 
   get template() {
     return `<section class="main main--result">

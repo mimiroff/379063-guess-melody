@@ -5,22 +5,23 @@ import getGenreScreen from '../genre/genre';
 import getArtistScreen from '../artist/artist';
 import Timer from '../timer';
 
-let timer = new Timer();
+const timer = new Timer();
 
 const getWelcomeScreen = () => {
   initialState.reset();
+  timer.stop();
+  timer.reset();
 
-  const welcomeScreen = new WelcomeView();
+  const welcomeScreen = new WelcomeView(initialState, getWelcome());
   welcomeScreen.onClick = () => {
-    const dice = getRandomInt(0, 2);
     timer.start();
+    const dice = getRandomInt(0, 2);
     if (dice === 0) {
       showScreen(getArtistScreen());
     } else {
       showScreen(getGenreScreen());
     }
   };
-  welcomeScreen.data = getWelcome();
   return welcomeScreen;
 };
 

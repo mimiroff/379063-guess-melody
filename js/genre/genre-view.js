@@ -1,5 +1,6 @@
 import AbstractView from '../view';
-import {getHeader} from '../header/header';
+import getHeader from '../header/header';
+import {showScreen} from "../util";
 
 const generateAnswerTemplate = (data) => {
 
@@ -9,8 +10,8 @@ const generateAnswerTemplate = (data) => {
     templates.push(`<div class="genre-answer">
           <div class="player-wrapper">
             <div class="player">
-              <audio src="${it.src}" controls></audio>
-              <button class="player-control player-control--pause"></button>
+              <audio src="${it.src}"></audio>
+              <button class="player-control player-control--play"></button>
               <div class="player-track">
                 <span class="player-status"></span>
               </div>
@@ -24,9 +25,13 @@ const generateAnswerTemplate = (data) => {
 };
 
 export default class GenreView extends AbstractView {
+  constructor(state, data) {
+    super(state);
+    this.data = data;
+  }
   get template() {
     return `<section class="main main--level main--level-genre">
-   ${getHeader()}
+   ${showScreen(getHeader())}
     <div class="main-wrap">
       <h2 class="title">Выберите ${this.data.genre} треки</h2>
       <form class="genre">
@@ -41,6 +46,7 @@ export default class GenreView extends AbstractView {
     const answerForm = this.element.querySelector(`.genre`);
     this.submitButton = answerForm.querySelector(`.genre-answer-send`);
     const checkboxes = answerForm.querySelectorAll(`[type='checkbox']`);
+    const controls = answerForm.querySelectorAll(`.player-control`);
     this.submitButton.setAttribute(`disabled`, ``);
     Array.from(checkboxes, (it) => {
       it.addEventListener(`click`, (evt) => {
@@ -51,6 +57,12 @@ export default class GenreView extends AbstractView {
       evt.preventDefault();
       this.onSubmitClick();
     });
+    Array.from(controls, (it) => {
+      it.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this.onControlClick(evt);
+      });
+    });
   }
 
   onCheckboxClick() {
@@ -58,6 +70,9 @@ export default class GenreView extends AbstractView {
   }
 
   onSubmitClick() {
+
+  }
+  onControlClick() {
 
   }
 }

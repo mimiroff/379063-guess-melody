@@ -8,7 +8,7 @@ export const createElement = (template) => {
   return element.content.cloneNode(true);
 };
 
-const main = document.querySelector(`.main`);
+export const main = document.querySelector(`.main`);
 
 export const showScreen = (view) => {
   main.innerHTML = ``;

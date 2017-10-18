@@ -1,6 +1,9 @@
 import {createElement} from './util';
 
 export default class AbstractView {
+  constructor(state) {
+    this.state = state;
+  }
 
   get template() {
     throw new Error(`You have to define template for view`);
@@ -20,12 +23,5 @@ export default class AbstractView {
       this.bind();
     }
     return this._element;
-  }
-
-  get data() {
-    return this._data;
-  }
-  set data(data) {
-    this._data = data;
   }
 }

@@ -17,8 +17,7 @@ export default class Timer {
   }
 
   onTick() {
-    console.log(this.time);
-    return this.time;
+
   }
 
   start() {

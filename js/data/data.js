@@ -1,13 +1,14 @@
 
 const initialState = {
-  _time: 300,
+  GAME_START_TIME: 300,
+  FAST_ANSWER_TIME: 20,
   _mistakes: 0,
   _level: 0,
   artistQuestions: new Set(),
   genreQuestions: new Set(),
   _playerAnswers: [],
   reset() {
-    this._time = 300;
+    this._time = this.GAME_START_TIME;
     this._mistakes = 0;
     this._level = 0;
     this.artistQuestions.clear();

@@ -6,16 +6,15 @@ import {gameState, generateGameResult} from './generate-result';
 import countGameResult from './count-result';
 import {initialState} from '../data/data';
 
-const getResultScreen = () => {
-  generateGameResult(countGameResult(initialState.answers, initialState.mistakes));
+const getResultScreen = (time) => {
+  generateGameResult(countGameResult(initialState.answers, initialState.mistakes, time));
 
-  const resultScreen = new ResultView();
+  const resultScreen = new ResultView(initialState, resultScreenData[gameState]);
 
   resultScreen.onReplayButtonClick = () => {
     showScreen(getWelcomeScreen());
   };
 
-  resultScreen.data = resultScreenData[gameState];
   return resultScreen;
 };
 

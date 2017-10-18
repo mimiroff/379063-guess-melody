@@ -1,6 +1,10 @@
 import AbstractView from '../view';
 
 export default class WelcomeView extends AbstractView {
+  constructor(state, data) {
+    super(state);
+    this.data = data;
+  }
   get template() {
     return `<section class="main main--welcome">
       <section class="logo" title="${this.data.gameName}"><h1>${this.data.gameName}</h1></section>

@@ -1,5 +1,6 @@
 import AbstractView from '../view';
-import {getHeader} from "../header/header";
+import getHeader from "../header/header";
+import {showScreen} from "../util";
 
 const generateAnswerTemplate = (state) => {
 
@@ -19,10 +20,13 @@ const generateAnswerTemplate = (state) => {
 };
 
 export default class ArtistView extends AbstractView {
-
+  constructor(state, data) {
+    super(state);
+    this.data = data;
+  }
   get template() {
     return `<section class="main main--level main--level-artist">
-${getHeader(this.state)}
+${showScreen(getHeader())}
     <div class="main-wrap">
       <h2 class="title main-title">Кто исполняет эту песню?</h2>
       <div class="player-wrapper">
@@ -42,13 +46,21 @@ ${getHeader(this.state)}
   }
 
   bind() {
-    this.artistList = this.element.querySelector(`.main-list`);
-    this.artistList.addEventListener(`click`, (evt) => {
+    const control = this.element.querySelector(`.player-control`);
+    const artistList = this.element.querySelector(`.main-list`);
+    artistList.addEventListener(`click`, (evt) => {
       this.onArtistListClick(evt);
+    });
+    control.addEventListener(`click`, (evt) => {
+      this.onControlClick(evt);
     });
   }
 
   onArtistListClick() {
+
+  }
+
+  onControlClick() {
 
   }
 }
