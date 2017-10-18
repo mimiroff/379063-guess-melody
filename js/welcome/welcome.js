@@ -3,7 +3,7 @@ import {showScreen, getRandomInt} from '../util';
 import {getWelcome, initialState} from '../data/data';
 import getGenreScreen from '../genre/genre';
 import getArtistScreen from '../artist/artist';
-import Timer from '../timer';
+import Timer from '../timer/timer';
 
 const timer = new Timer();
 

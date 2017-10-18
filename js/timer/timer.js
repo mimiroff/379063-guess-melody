@@ -1,6 +1,9 @@
 
 export default class Timer {
   set time(time) {
+    if (typeof time !== `number`) {
+      throw new Error(`Wrong argument type. Number should be passed!`);
+    }
     this._time = time;
   }
 
@@ -13,7 +16,12 @@ export default class Timer {
   }
 
   tick() {
-    this.time--;
+    if (this.time === 0) {
+      this.time = 0;
+      this.massage = `Time is up!`;
+    } else {
+      this.time--;
+    }
   }
 
   onTick() {
@@ -21,7 +29,6 @@ export default class Timer {
   }
 
   start() {
-    this.reset();
     this.interval = setInterval(() => {
       this.tick();
       this.onTick();

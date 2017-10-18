@@ -45,7 +45,6 @@ const getGenreScreen = () => {
     if (initialState.mistakes <= 3 && initialState.level < 10) {
       showScreen(getArtistScreen());
     } else {
-      console.log(timePast);
       showScreen(getResultScreen(timePast));
     }
   };
@@ -57,6 +56,13 @@ const getGenreScreen = () => {
       evt.target.classList.remove(`player-control--pause`);
       evt.target.classList.add(`player-control--play`);
     } else if (evt.target.classList.contains(`player-control--play`)) {
+      Array.from(genreScreen.tracks, (it) => {
+        it.pause();
+      });
+      Array.from(genreScreen.controls, (it) => {
+        it.classList.remove(`player-control--pause`);
+        it.classList.add(`player-control--play`);
+      });
       audio.play();
       evt.target.classList.remove(`player-control--play`);
       evt.target.classList.add(`player-control--pause`);

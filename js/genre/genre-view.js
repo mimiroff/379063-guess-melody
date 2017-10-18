@@ -46,7 +46,8 @@ export default class GenreView extends AbstractView {
     const answerForm = this.element.querySelector(`.genre`);
     this.submitButton = answerForm.querySelector(`.genre-answer-send`);
     const checkboxes = answerForm.querySelectorAll(`[type='checkbox']`);
-    const controls = answerForm.querySelectorAll(`.player-control`);
+    this.controls = answerForm.querySelectorAll(`.player-control`);
+    this.tracks = answerForm.querySelectorAll(`audio`);
     this.submitButton.setAttribute(`disabled`, ``);
     Array.from(checkboxes, (it) => {
       it.addEventListener(`click`, (evt) => {
@@ -57,7 +58,7 @@ export default class GenreView extends AbstractView {
       evt.preventDefault();
       this.onSubmitClick();
     });
-    Array.from(controls, (it) => {
+    Array.from(this.controls, (it) => {
       it.addEventListener(`click`, (evt) => {
         evt.preventDefault();
         this.onControlClick(evt);
