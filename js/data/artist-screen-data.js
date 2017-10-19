@@ -1,5 +1,5 @@
 import {musicData, initialState} from './data';
-import {getRandomInt} from './util';
+import {getRandomInt} from '../util';
 
 const generateArtistQuestion = (numberOfAnswers) => {
   const questionData = [...[...musicData].keys()].filter((it) => {

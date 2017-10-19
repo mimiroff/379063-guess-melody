@@ -1,6 +1,5 @@
-import generateGameResult from './generate-result';
 
-const countGameResult = (answers, mistakes) => {
+const countGameResult = (answers, mistakes, time) => {
   if (!Array.isArray(answers) || typeof mistakes !== `number`) {
     throw new Error(`Wrong argument type`);
   }
@@ -11,7 +10,7 @@ const countGameResult = (answers, mistakes) => {
     score: 0,
     fast: 0,
     mistakes,
-    timeLeft: 300
+    timePast: time
   };
 
   gameAnswers.map((it)=> {
@@ -23,8 +22,7 @@ const countGameResult = (answers, mistakes) => {
     }
   });
   result.score -= mistakesCredits;
-  generateGameResult(result);
+  return result;
 };
 
 export default countGameResult;
-

@@ -1,3 +1,4 @@
-import createWelcomeScreen from './welcome';
+import {showScreen} from './util';
+import {getWelcomeScreen} from './welcome/welcome';
 
-createWelcomeScreen();
+showScreen(getWelcomeScreen());

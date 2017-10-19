@@ -1,5 +1,24 @@
 import {musicData, initialState} from './data';
-import {getRandomInt} from './util';
+import {getRandomInt} from '../util';
+
+const answersStack = {
+  _answers: new Set(),
+  get answers() {
+    return this._answers;
+  },
+  get size() {
+    return this._answers.size;
+  },
+  clear() {
+    this._answers.clear();
+  },
+  add(data) {
+    this._answers.add(data);
+  },
+  delete(data) {
+    this._answers.delete(data);
+  }
+};
 
 const generateGenreQuestion = (numberOfAnswers) => {
   const questionData = [...[...musicData].keys()].filter((it) => {
@@ -51,4 +70,4 @@ const generateGenreQuestion = (numberOfAnswers) => {
   return genreQuestion;
 };
 
-export {generateGenreQuestion};
+export {generateGenreQuestion, answersStack};

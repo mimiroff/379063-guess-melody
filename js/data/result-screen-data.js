@@ -1,5 +1,5 @@
 
-const ResultScreenData = {
+const resultScreenData = {
   win: {
     title: `Вы настоящий меломан!`,
     statistics: ``,
@@ -20,4 +20,4 @@ const ResultScreenData = {
   }
 };
 
-export default ResultScreenData;
+export default resultScreenData;
