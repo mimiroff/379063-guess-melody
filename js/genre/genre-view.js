@@ -1,5 +1,6 @@
 import AbstractView from '../view';
 
+
 const generateAnswerTemplate = (data) => {
 
   const templates = [];
@@ -23,8 +24,8 @@ const generateAnswerTemplate = (data) => {
 };
 
 export default class GenreView extends AbstractView {
-  constructor(state, data) {
-    super(state);
+  constructor(data) {
+    super();
     this.data = data;
   }
 
@@ -42,26 +43,29 @@ export default class GenreView extends AbstractView {
 
   bind() {
     const answerForm = this.element.querySelector(`.genre`);
-    this.submitButton = answerForm.querySelector(`.genre-answer-send`);
+    const submitButton = answerForm.querySelector(`.genre-answer-send`);
     const checkboxes = answerForm.querySelectorAll(`[type='checkbox']`);
-    this.controls = answerForm.querySelectorAll(`.player-control`);
-    this.tracks = answerForm.querySelectorAll(`audio`);
-    this.submitButton.setAttribute(`disabled`, ``);
+    const controls = answerForm.querySelectorAll(`.player-control`);
+    const tracks = answerForm.querySelectorAll(`audio`);
+    submitButton.setAttribute(`disabled`, ``);
     Array.from(checkboxes, (it) => {
       it.addEventListener(`click`, (evt) => {
         this.onCheckboxClick(evt);
       });
     });
-    this.submitButton.addEventListener(`click`, (evt) => {
+    submitButton.addEventListener(`click`, (evt) => {
       evt.preventDefault();
       this.onSubmitClick();
     });
-    Array.from(this.controls, (it) => {
+    Array.from(controls, (it) => {
       it.addEventListener(`click`, (evt) => {
         evt.preventDefault();
         this.onControlClick(evt);
       });
     });
+    this.submitButton = submitButton;
+    this.controls = controls;
+    this.tracks = tracks;
   }
 
   onCheckboxClick() {

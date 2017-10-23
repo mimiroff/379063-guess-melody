@@ -1,4 +1,7 @@
-import {showScreen} from './util';
-import {getWelcomeScreen} from './welcome/welcome';
+// import {showScreen} from './util';
+// import {getWelcomeScreen} from './welcome/welcome';
+import App from './application';
 
-showScreen(getWelcomeScreen());
+App.showWelcome();
+
+//showScreen(getWelcomeScreen());

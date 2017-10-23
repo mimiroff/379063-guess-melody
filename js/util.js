@@ -1,4 +1,4 @@
-import getHeader from "./header/header";
+// import getHeader from "./header/header";
 
 export const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min);
@@ -17,10 +17,10 @@ export const showScreen = (view) => {
   main.appendChild(view.element);
 };
 
-export const showHeader = () => {
-  const header = getHeader();
-  header.draw();
-};
+// export const showHeader = () => {
+//   const header = getHeader();
+//   header.draw();
+// };
 
 export const getMinutes = (timeLeft) => {
   let time = Math.floor(timeLeft / 60);

@@ -1,6 +1,6 @@
 import ResultView from './result-view';
-import {showScreen} from '../util';
-import {getWelcomeScreen} from '../welcome/welcome';
+// import {showScreen} from '../util';
+// import {getWelcomeScreen} from '../welcome/welcome';
 import resultScreenData from '../data/result-screen-data';
 import {gameState, generateGameResult} from './generate-result';
 import countGameResult from './count-result';
@@ -12,7 +12,7 @@ const getResultScreen = (time) => {
   const resultScreen = new ResultView(initialState, resultScreenData[gameState]);
 
   resultScreen.onReplayButtonClick = () => {
-    showScreen(getWelcomeScreen());
+    // showScreen(getWelcomeScreen());
   };
 
   return resultScreen;
