@@ -1,6 +1,8 @@
 import GameView from './game-view';
 import {initialState} from "../data/data";
 import {answersStack} from "../data/genre-screen-data";
+import App from '../application';
+import {getRandomInt} from "../util";
 
 class GameScreen {
   constructor() {
@@ -14,7 +16,11 @@ class GameScreen {
     this.view.onCheckboxClick = (evt) => this.onCheckboxClick(evt);
     this.view.onControlClick = (evt) => this.onControlClick(evt);
     this.view.onSubmitClick = () => this.onSubmitClick();
-    this.changeLevel(`artist`);
+    if (getRandomInt(0, 2) === 0) {
+      this.changeLevel(`artist`);
+    } else {
+      this.changeLevel(`genre`);
+    }
     this.tick();
   }
 
@@ -34,7 +40,7 @@ class GameScreen {
         this.changeLevel(`genre`);
       } else {
         this.stopTimer();
-        alert(`Game over!`);
+        App.showStats();
       }
     }
   }
@@ -79,13 +85,12 @@ class GameScreen {
       initialState.addAnswer({answer: true, fast: false});
     }
 
-    if (initialState.mistakes <= 3 && initialState.level < 10) {
+    if (initialState.mistakes <= 3 && initialState.level <= 10) {
       this.changeLevel(`artist`);
     } else {
       this.stopTimer();
-      alert(`Game over!`);
+      App.showStats();
     }
-      //showScreen(getResultScreen(initialState.GAME_START_TIME - this.endTime));
   }
 
   onControlClick(evt) {
@@ -114,6 +119,7 @@ class GameScreen {
     }
     this.view.updateLevel(newLevel);
     initialState.nextLevel();
+    this.startTime = initialState.time;
   }
 
   tick() {

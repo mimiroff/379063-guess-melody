@@ -9,8 +9,8 @@ const drawComparison = (data) => {
 };
 
 export default class ResultView extends AbstractView {
-  constructor(state, data) {
-    super(state);
+  constructor(data) {
+    super();
     this.data = data;
   }
 
@@ -25,8 +25,10 @@ export default class ResultView extends AbstractView {
   }
 
   bind() {
-    this.replayButton = this.element.querySelector(`.main-replay`);
-    this.replayButton.addEventListener(`click`, this.onReplayButtonClick);
+    const replayButton = this.element.querySelector(`.main-replay`);
+    replayButton.addEventListener(`click`, () => {
+      this.onReplayButtonClick();
+    });
   }
 
   onReplayButtonClick() {

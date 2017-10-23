@@ -5,7 +5,7 @@ const generateArtistQuestion = (numberOfAnswers) => {
   const questionData = [...[...musicData].keys()].filter((it) => {
     return !initialState.artistQuestions.has(it);
   });
-  const questionNumber = questionData[getRandomInt(0, questionData.length - 1)];
+  const questionNumber = questionData[getRandomInt(0, questionData.length)];
 
   const generateAnswers = () => {
     const answers = [];

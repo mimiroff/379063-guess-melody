@@ -2,7 +2,6 @@ import WelcomeView from './welcome-view';
 import {showScreen} from '../util';
 import App from '../application';
 
-
 class WelcomeScreen {
   constructor() {
     this.view = new WelcomeView();
