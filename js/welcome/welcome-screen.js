@@ -1,7 +1,5 @@
 import WelcomeView from './welcome-view';
 import {showScreen} from '../util';
-// import getArtistScreen from '../artist/artist';
-// import getGenreScreen from '../genre/genre';
 import App from '../application';
 
 

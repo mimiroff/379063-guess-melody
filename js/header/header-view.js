@@ -35,14 +35,16 @@ export default class Header extends AbstractView {
     this.circleElement = this.element.querySelector(`.timer-line`);
   }
 
-  updateTime(time) {
-    this.minutes.textContent = getMinutes(time);
-    this.seconds.textContent = getSeconds(time);
-    this.circleElement.setAttribute(`stroke-dasharray`, `${(2 * Math.PI * (370 - (370 / 300) * (300 - time)))}`);
-    this.circleElement.setAttribute(`stroke-dashoffset`, `${(300 - time)}`);
+  updateTime(state) {
+    this.minutes.textContent = getMinutes(state.time);
+    this.seconds.textContent = getSeconds(state.time);
+    this.circleElement.setAttribute(`stroke-dasharray`, `${(2 * Math.PI * (370 - (370 / 300) * (300 - state.time)))}`);
+    this.circleElement.setAttribute(`stroke-dashoffset`, `${(300 - state.time)}`);
   }
 
   draw() {
-    document.querySelector(`.main--level`).insertBefore(this.element, document.querySelector(`.main-wrap`));
+    const container = document.querySelector(`.main--level`);
+    const level = document.querySelector(`.main-wrap`);
+    container.insertBefore(this.element, level);
   }
 }

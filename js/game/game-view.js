@@ -4,6 +4,8 @@ import {generateArtistQuestion} from "../data/artist-screen-data";
 import {showScreen} from "../util";
 import GenreView from "../genre/genre-view";
 import {generateGenreQuestion} from "../data/genre-screen-data";
+import {initialState} from "../data/data";
+import Header from '../header/header-view';
 
 // const update = (container, view) => {
 //   container.innerHTML = ``;
@@ -26,8 +28,17 @@ export default class GameView extends AbstractView {
     }
 
     showScreen(level);
+    this.drawHeader();
     this.level = level;
-    console.dir(level);
+  }
+
+  drawHeader() {
+    this.header = new Header(initialState);
+    this.header.draw();
+  }
+
+  updateHeader() {
+    this.header.updateTime(initialState);
   }
 
   onArtistListClick() {

@@ -8,12 +8,14 @@ class GameScreen {
   }
 
   init() {
+    initialState.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
     this.view.onArtistControlClick = (evt) => this.onArtistControlClick(evt);
     this.view.onCheckboxClick = (evt) => this.onCheckboxClick(evt);
     this.view.onControlClick = (evt) => this.onControlClick(evt);
     this.view.onSubmitClick = () => this.onSubmitClick();
     this.changeLevel(`artist`);
+    this.tick();
   }
 
   onArtistListClick(evt) {
@@ -31,6 +33,7 @@ class GameScreen {
         initialState.nextLevel();
         this.changeLevel(`genre`);
       } else {
+        this.stopTimer();
         alert(`Game over!`);
       }
     }
@@ -56,9 +59,9 @@ class GameScreen {
       answersStack.delete(evt.currentTarget);
     }
     if (answersStack.size > 0) {
-      this.view.submitButton.removeAttribute(`disabled`);
+      this.view.level.submitButton.removeAttribute(`disabled`);
     } else {
-      this.view.submitButton.setAttribute(`disabled`, ``);
+      this.view.level.submitButton.setAttribute(`disabled`, ``);
     }
   }
 
@@ -79,6 +82,7 @@ class GameScreen {
     if (initialState.mistakes <= 3 && initialState.level < 10) {
       this.changeLevel(`artist`);
     } else {
+      this.stopTimer();
       alert(`Game over!`);
     }
       //showScreen(getResultScreen(initialState.GAME_START_TIME - this.endTime));
@@ -91,10 +95,10 @@ class GameScreen {
       evt.target.classList.remove(`player-control--pause`);
       evt.target.classList.add(`player-control--play`);
     } else if (evt.target.classList.contains(`player-control--play`)) {
-      Array.from(this.view.tracks, (it) => {
+      Array.from(this.view.level.tracks, (it) => {
         it.pause();
       });
-      Array.from(this.view.controls, (it) => {
+      Array.from(this.view.level.controls, (it) => {
         it.classList.remove(`player-control--pause`);
         it.classList.add(`player-control--play`);
       });
@@ -110,6 +114,17 @@ class GameScreen {
     }
     this.view.updateLevel(newLevel);
     initialState.nextLevel();
+  }
+
+  tick() {
+    initialState.time--;
+    this.view.updateHeader();
+
+    this.timer = setTimeout(() => this.tick(), 1000);
+  }
+
+  stopTimer() {
+    clearTimeout(this.timer);
   }
 }
 
