@@ -1,44 +1,75 @@
+import {getRandomInt} from "../util";
 
 const initialState = {
   GAME_START_TIME: 300,
   FAST_ANSWER_TIME: 20,
-  _mistakes: 0,
-  _level: 0,
+  mistakes: 0,
+  level: 0,
   artistQuestions: new Set(),
   genreQuestions: new Set(),
-  _playerAnswers: [],
+  playerAnswers: [],
   reset() {
-    this._time = this.GAME_START_TIME;
-    this._mistakes = 0;
-    this._level = 0;
+    this.time = this.GAME_START_TIME;
+    this.mistakes = 0;
+    this.level = 0;
     this.artistQuestions.clear();
     this.genreQuestions.clear();
-    this._playerAnswers = [];
+    this.playerAnswers = [];
   },
   get answers() {
-    return this._playerAnswers;
+    return this.playerAnswers;
   },
-  set time(time) {
-    this._time = time;
-  },
-  get time() {
-    return this._time;
-  },
-  get mistakes() {
-    return this._mistakes;
-  },
-  get level() {
-    return this._level;
-  },
+  // set time(time) {
+  //   this._time = time;
+  // },
+  // get time() {
+  //   return this._time;
+  // },
+  // get mistakes() {
+  //   return this._mistakes;
+  // },
+  // get level() {
+  //   return this._level;
+  // },
   nextLevel() {
-    this._level++;
+    this.level++;
   },
   addMistake() {
-    this._mistakes++;
+    this.mistakes++;
   },
   addAnswer(answer) {
-    this._playerAnswers.push(answer);
+    this.playerAnswers.push(answer);
   }
+};
+
+export const tick = (game) => {
+  game = Object.assign({}, game);
+  game.time--;
+  return game;
+};
+
+export const reset = (game) => {
+  game = Object.assign({}, game);
+  game.reset();
+  return game;
+};
+
+export const nextLevel = (game) => {
+  game = Object.assign({}, game);
+  game.nextLevel();
+  return game;
+};
+
+export const addMistake = (game) => {
+  game = Object.assign({}, game);
+  game.addMistake();
+  return game;
+};
+
+export const addAnswer = (game, answer) => {
+  game = Object.assign({}, game);
+  game.addAnswer(answer);
+  return game;
 };
 
 const musicData = new Set([
@@ -86,4 +117,153 @@ const musicData = new Set([
   }
 ]);
 
-export {initialState, musicData};
+const generateArtistQuestion = () => {
+  const ANSWERS_QUANTITY = 3;
+  const questionData = [...[...musicData].keys()].filter((it) => {
+    return !initialState.artistQuestions.has(it);
+  });
+  const questionNumber = questionData[getRandomInt(0, questionData.length)];
+
+  const generateAnswers = () => {
+    const answers = [];
+    let answer = {
+      artist: [...musicData][questionNumber].artist,
+      image: [...musicData][questionNumber].image,
+      isCorrect: true
+    };
+    answers.push(answer);
+
+    const artists = new Set();
+    const filteredByIndex = [...musicData].filter((it, i) => {
+      return i !== questionNumber;
+    });
+
+    const filteredByArtists = filteredByIndex.filter((it) => {
+      if (!artists.has(it.artist) && it.artist !== [...musicData][questionNumber].artist) {
+        artists.add(it.artist);
+        return it;
+      } else {
+        return false;
+      }
+    });
+
+    filteredByArtists.sort(() => {
+      return Math.random() - 0.5;
+    }).slice(0, ANSWERS_QUANTITY - 1).map((it) => {
+      answer = {
+        artist: it.artist,
+        image: it.image,
+        isCorrect: false
+      };
+      answers.push(answer);
+    });
+
+    answers.sort(() => {
+      return Math.random() - 0.5;
+    });
+    return answers;
+  };
+
+  const artistQuestion = {
+    src: [...musicData][questionNumber].src,
+    answers: generateAnswers(),
+    isGenre: false
+  };
+
+  initialState.artistQuestions.add(questionNumber);
+  return artistQuestion;
+};
+
+const answersStack = {
+  _answers: new Set(),
+  get answers() {
+    return this._answers;
+  },
+  get size() {
+    return this._answers.size;
+  },
+  clear() {
+    this._answers.clear();
+  },
+  add(data) {
+    this._answers.add(data);
+  },
+  delete(data) {
+    this._answers.delete(data);
+  }
+};
+
+const generateGenreQuestion = () => {
+  const ANSWERS_QUANTITY = 4;
+  const questionData = [...[...musicData].keys()].filter((it) => {
+    return !initialState.genreQuestions.has(it);
+  });
+  const questionNumber = questionData[getRandomInt(0, questionData.length)];
+
+  const generateAnswers = () => {
+    const answers = [];
+    let answer = {
+      src: [...musicData][questionNumber].src,
+      isCorrect: true
+    };
+    answers.push(answer);
+
+    const filteredByIndex = [...musicData].filter((it, i) => {
+      return i !== questionNumber;
+    });
+
+    filteredByIndex.sort(() => {
+      return Math.random() - 0.5;
+    }).slice(0, ANSWERS_QUANTITY - 1).map((it) => {
+      if (it.genre === [...musicData][questionNumber].genre) {
+        answer = {
+          src: it.src,
+          isCorrect: true
+        };
+      } else {
+        answer = {
+          src: it.src,
+          isCorrect: false
+        };
+      }
+      answers.push(answer);
+    });
+
+    answers.sort(() => {
+      return Math.random() - 0.5;
+    });
+    return answers;
+  };
+
+  const genreQuestion = {
+    genre: [...musicData][questionNumber].genre,
+    answers: generateAnswers(),
+    isGenre: true
+  };
+
+  initialState.genreQuestions.add(questionNumber);
+  return genreQuestion;
+};
+
+const resultScreenData = {
+  win: {
+    title: `Вы настоящий меломан!`,
+    statistics: ``,
+    comparison: ``,
+    replayTitle: `Сыграть ещё раз`
+  },
+  timeUp: {
+    title: `Увы и ах!`,
+    statistics: `Время вышло!<br/>
+    Вы не успели отгадать все мелодии`,
+    replayTitle: `Попробовать ещё раз`
+  },
+  noTries: {
+    title: `Какая жалость!`,
+    statistics: `У вас закончились все попытки.<br/>
+    Ничего, повезёт в следующий раз!`,
+    replayTitle: `Попробовать ещё раз`
+  }
+};
+
+export {initialState, musicData, generateGenreQuestion, generateArtistQuestion, answersStack, resultScreenData};

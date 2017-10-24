@@ -12,7 +12,7 @@ export default class Application {
     newGameScreen.init();
   }
 
-  static showStats() {
-    resultScreen.init();
+  static showStats(model) {
+    resultScreen.init(model);
   }
 }

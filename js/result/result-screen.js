@@ -1,20 +1,17 @@
 import App from '../application';
 import ResultView from "./result-view";
-import {initialState} from "../data/data";
 import {showScreen, getMinutes, getSeconds} from "../util";
-import resultScreenData from "../data/result-screen-data";
+
 
 class ResultScreen {
-  constructor() {
-    this.data = resultScreenData;
-    this.state = initialState;
-  }
 
-  init() {
+  init(model) {
+    this.state = model.state;
+    this.data = model.stats;
     this.view = new ResultView(this.generateResult(this.countResult()));
 
     this.view.onReplayButtonClick = () => {
-      App.showWelcome();
+      App.showGame();
     };
 
     showScreen(this.view);
@@ -29,7 +26,7 @@ class ResultScreen {
       timePast: this.state.GAME_START_TIME - this.state.time
     };
     const mistakesCredits = result.mistakes * MISTAKE_MULT;
-    const gameAnswers = this.state.answers;
+    const gameAnswers = this.state.playerAnswers;
 
     gameAnswers.map((it) => {
       if (it.answer === true && it.fast === true) {
@@ -113,13 +110,9 @@ class ResultScreen {
           ENDINGS.seconds = `ы`;
         }
 
-        if ((score < 10 || score > 20) && score.toString().includes(`1`, 1)) {
+        if (score === 1) {
           ENDINGS.score = ``;
-        } else if ((score < 10 || score > 20) && score.toString().includes(`2`, 1)) {
-          ENDINGS.score = `а`;
-        } else if ((score < 10 || score > 20) && score.toString().includes(`3`, 1)) {
-          ENDINGS.score = `а`;
-        } else if ((score < 10 || score > 20) && score.toString().includes(`4`, 1)) {
+        } else if (score === 2 || score === 3 || score === 4) {
           ENDINGS.score = `а`;
         }
 
@@ -127,13 +120,9 @@ class ResultScreen {
           ENDINGS.fast = `ый`;
         }
 
-        if ((mistakes < 10 || mistakes > 20) && mistakes.toString().includes(`1`, 1)) {
+        if (mistakes === 1) {
           ENDINGS.mistakes = `ку`;
-        } else if ((mistakes < 10 || mistakes > 20) && mistakes.toString().includes(`2`, 1)) {
-          ENDINGS.mistakes = `ки`;
-        } else if ((mistakes < 10 || mistakes > 20) && mistakes.toString().includes(`3`, 1)) {
-          ENDINGS.mistakes = `ки`;
-        } else if ((mistakes < 10 || mistakes > 20) && mistakes.toString().includes(`4`, 1)) {
+        } else if (mistakes === 2 || mistakes === 3) {
           ENDINGS.mistakes = `ки`;
         }
 

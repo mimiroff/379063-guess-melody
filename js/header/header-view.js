@@ -13,8 +13,8 @@ export default class Header extends AbstractView {
        <circle
          cx="390" cy="390" r="370"
          class="timer-line"
-         stroke-dasharray="${2 * Math.PI * (370 - (370 / 300) * (300 - this.state.time))}"
-         stroke-dashoffset="${300 - this.state.time}"
+         stroke-dasharray="${(2 * Math.PI * 370) - ((370 / 300) * (300 - this.state.time))}"
+         stroke-dashoffset="${(2 * Math.PI * 370) - ((2 * Math.PI * 370) - ((370 / 300) * (300 - this.state.time)))}"
          style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center" />
 
        <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
@@ -25,7 +25,7 @@ export default class Header extends AbstractView {
      </svg>
 
      <div class="main-mistakes">
-     ${new Array(this.state.mistakes).fill(mistake).join(``)}
+     ${new Array(this.state.state.mistakes).fill(mistake).join(``)}
      </div>`;
   }
 
@@ -38,13 +38,17 @@ export default class Header extends AbstractView {
   updateTime(state) {
     this.minutes.textContent = getMinutes(state.time);
     this.seconds.textContent = getSeconds(state.time);
-    this.circleElement.setAttribute(`stroke-dasharray`, `${(2 * Math.PI * (370 - (370 / 300) * (300 - state.time)))}`);
-    this.circleElement.setAttribute(`stroke-dashoffset`, `${(300 - state.time)}`);
+    this.circleElement.setAttribute(`stroke-dasharray`, `${(2 * Math.PI * 370) - ((370 / 300) * (300 - state.time))}`);
+    this.circleElement.setAttribute(`stroke-dashoffset`, `${(2 * Math.PI * 370) - (2 * Math.PI * 370 - ((370 / 300) * (300 - state.time)))}`);
   }
 
   draw() {
     const container = document.querySelector(`.main--level`);
     const level = document.querySelector(`.main-wrap`);
     container.insertBefore(this.element, level);
+  }
+
+  colorize() {
+    document.querySelector(`.timer-value`).classList.add(`timer-value--finished`);
   }
 }
