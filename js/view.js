@@ -1,9 +1,6 @@
 import {createElement} from './util';
 
 export default class AbstractView {
-  constructor(state) {
-    this.state = state;
-  }
 
   get template() {
     throw new Error(`You have to define template for view`);

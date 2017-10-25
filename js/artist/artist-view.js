@@ -1,11 +1,11 @@
 import AbstractView from '../view';
-import getHeader from "../header/header";
 
-const generateAnswerTemplate = (state) => {
+
+const generateAnswerTemplate = (data) => {
 
   const templates = [];
 
-  state.answers.map((it, i) => {
+  data.answers.map((it, i) => {
     templates.push(`<div class="main-answer-wrapper">
           <input class="main-answer-r" type="radio" id="answer-${i + 1}" name="answer" value="${it.isCorrect}"/>
           <label class="main-answer" for="answer-${i + 1}">
@@ -19,10 +19,9 @@ const generateAnswerTemplate = (state) => {
 };
 
 export default class ArtistView extends AbstractView {
-  constructor(state, data) {
-    super(state);
+  constructor(data) {
+    super();
     this.data = data;
-    this.header = getHeader();
   }
   get template() {
     return `<section class="main main--level main--level-artist">
@@ -51,7 +50,7 @@ export default class ArtistView extends AbstractView {
       this.onArtistListClick(evt);
     });
     control.addEventListener(`click`, (evt) => {
-      this.onControlClick(evt);
+      this.onArtistControlClick(evt);
     });
   }
 
@@ -59,7 +58,7 @@ export default class ArtistView extends AbstractView {
 
   }
 
-  onControlClick() {
+  onArtistControlClick() {
 
   }
 }
