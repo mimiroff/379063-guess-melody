@@ -2,6 +2,8 @@ import {getMinutes, getSeconds} from "../util";
 import AbstractView from "../view";
 
 const mistake = `<img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">`;
+const fullLength = 2 * Math.PI * 370;
+
 
 export default class Header extends AbstractView {
   constructor(state) {
@@ -13,8 +15,8 @@ export default class Header extends AbstractView {
        <circle
          cx="390" cy="390" r="370"
          class="timer-line"
-         stroke-dasharray="${(2 * Math.PI * 370) - ((370 / 300) * (300 - this.state.time))}"
-         stroke-dashoffset="${(2 * Math.PI * 370) - ((2 * Math.PI * 370) - ((370 / 300) * (300 - this.state.time)))}"
+         stroke-dasharray="${fullLength}"
+         stroke-dashoffset="${fullLength / 300 * (300 - this.state.time)}"
          style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center" />
 
        <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
@@ -38,8 +40,8 @@ export default class Header extends AbstractView {
   updateTime(state) {
     this.minutes.textContent = getMinutes(state.time);
     this.seconds.textContent = getSeconds(state.time);
-    this.circleElement.setAttribute(`stroke-dasharray`, `${(2 * Math.PI * 370) - ((370 / 300) * (300 - state.time))}`);
-    this.circleElement.setAttribute(`stroke-dashoffset`, `${(2 * Math.PI * 370) - (2 * Math.PI * 370 - ((370 / 300) * (300 - state.time)))}`);
+    this.circleElement.setAttribute(`stroke-dasharray`, `${fullLength}`);
+    this.circleElement.setAttribute(`stroke-dashoffset`, `${fullLength / 300 * (300 - this.state.time)}`);
   }
 
   draw() {
