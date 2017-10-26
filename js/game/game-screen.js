@@ -1,5 +1,5 @@
 import GameView from './game-view';
-import {initialState} from '../data/data';
+//import {initialState} from '../data/data';
 import App from '../application';
 import {getRandomInt} from '../util';
 import GameModel from './game-model';
@@ -10,8 +10,8 @@ class GameScreen {
     this.view = new GameView(this.model);
   }
 
-  init() {
-    this.model.update(initialState);
+  init(state) {
+    this.model.update(state);
     this.model.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
     this.view.onArtistControlClick = (evt) => this.onArtistControlClick(evt);
@@ -38,12 +38,22 @@ class GameScreen {
         this.model.addMistake();
       }
 
-      if (this.model.mistakes <= 3 && this.model.level < 10) {
+      if (this.model.mistakes > 3) {
+        this.stopTimer();
+        App.showLoose(`noTries`);
+      } else if (this.model.level < 10) {
         this.changeLevel(this.model.getGenreLevel());
       } else {
         this.stopTimer();
         App.showStats(this.model);
       }
+
+      // if (this.model.mistakes <= 3 && this.model.level < 10) {
+      //   this.changeLevel(this.model.getGenreLevel());
+      // } else {
+      //   this.stopTimer();
+      //   App.showStats(this.model);
+      // }
     }
   }
 
@@ -87,7 +97,10 @@ class GameScreen {
       this.model.addAnswer({answer: true, fast: false});
     }
 
-    if (this.model.mistakes <= 3 && this.model.level < 10) {
+    if (this.model.mistakes > 3) {
+      this.stopTimer();
+      App.showLoose(`noTries`);
+    } else if (this.model.level < 10) {
       this.changeLevel(this.model.getArtistLevel());
     } else {
       this.stopTimer();
@@ -134,7 +147,7 @@ class GameScreen {
     }
     if (this.model.time === 0) {
       this.stopTimer();
-      App.showStats(this.model);
+      App.showLoose(`timeUp`);
     }
   }
 

@@ -8,38 +8,6 @@ const initialState = {
   artistQuestions: new Set(),
   genreQuestions: new Set(),
   playerAnswers: [],
-  reset() {
-    this.time = this.GAME_START_TIME;
-    this.mistakes = 0;
-    this.level = 0;
-    this.artistQuestions.clear();
-    this.genreQuestions.clear();
-    this.playerAnswers = [];
-  },
-  get answers() {
-    return this.playerAnswers;
-  },
-  // set time(time) {
-  //   this._time = time;
-  // },
-  // get time() {
-  //   return this._time;
-  // },
-  // get mistakes() {
-  //   return this._mistakes;
-  // },
-  // get level() {
-  //   return this._level;
-  // },
-  nextLevel() {
-    this.level++;
-  },
-  addMistake() {
-    this.mistakes++;
-  },
-  addAnswer(answer) {
-    this.playerAnswers.push(answer);
-  }
 };
 
 export const tick = (game) => {
@@ -50,25 +18,28 @@ export const tick = (game) => {
 
 export const reset = (game) => {
   game = Object.assign({}, game);
-  game.reset();
+  game.time = game.GAME_START_TIME;
+  game.mistakes = 0;
+  game.level = 0;
+  game.playerAnswers = [];
   return game;
 };
 
 export const nextLevel = (game) => {
   game = Object.assign({}, game);
-  game.nextLevel();
+  game.level++;
   return game;
 };
 
 export const addMistake = (game) => {
   game = Object.assign({}, game);
-  game.addMistake();
+  game.mistakes++;
   return game;
 };
 
 export const addAnswer = (game, answer) => {
   game = Object.assign({}, game);
-  game.addAnswer(answer);
+  game.playerAnswers.push(answer);
   return game;
 };
 
