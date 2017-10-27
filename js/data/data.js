@@ -1,13 +1,16 @@
 import {getRandomInt} from "../util";
 
+export const GAME_START_TIME = 300;
+export const FAST_ANSWER_TIME = 20;
+const artistQuestions = new Set();
+const genreQuestions = new Set();
+
 const initialState = {
-  GAME_START_TIME: 300,
-  FAST_ANSWER_TIME: 20,
   mistakes: 0,
   level: 0,
-  artistQuestions: new Set(),
-  genreQuestions: new Set(),
+  time: GAME_START_TIME,
   playerAnswers: [],
+  question: null
 };
 
 export const tick = (game) => {
@@ -18,7 +21,7 @@ export const tick = (game) => {
 
 export const reset = (game) => {
   game = Object.assign({}, game);
-  game.time = game.GAME_START_TIME;
+  game.time = GAME_START_TIME;
   game.mistakes = 0;
   game.level = 0;
   game.playerAnswers = [];
@@ -91,7 +94,7 @@ const musicData = new Set([
 const generateArtistQuestion = () => {
   const ANSWERS_QUANTITY = 3;
   const questionData = [...[...musicData].keys()].filter((it) => {
-    return !initialState.artistQuestions.has(it);
+    return !artistQuestions.has(it);
   });
   const questionNumber = questionData[getRandomInt(0, questionData.length)];
 
@@ -141,7 +144,7 @@ const generateArtistQuestion = () => {
     isGenre: false
   };
 
-  initialState.artistQuestions.add(questionNumber);
+  artistQuestions.add(questionNumber);
   return artistQuestion;
 };
 
@@ -167,7 +170,7 @@ const answersStack = {
 const generateGenreQuestion = () => {
   const ANSWERS_QUANTITY = 4;
   const questionData = [...[...musicData].keys()].filter((it) => {
-    return !initialState.genreQuestions.has(it);
+    return !genreQuestions.has(it);
   });
   const questionNumber = questionData[getRandomInt(0, questionData.length)];
 
@@ -212,7 +215,7 @@ const generateGenreQuestion = () => {
     isGenre: true
   };
 
-  initialState.genreQuestions.add(questionNumber);
+  genreQuestions.add(questionNumber);
   return genreQuestion;
 };
 

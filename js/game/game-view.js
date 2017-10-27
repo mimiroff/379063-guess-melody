@@ -34,8 +34,8 @@ export default class GameView extends AbstractView {
     this.header.draw();
   }
 
-  updateHeader(state) {
-    this.header.updateTime(state);
+  updateHeader(time) {
+    this.header.updateTime(time);
   }
 
   colorizeHeader() {
