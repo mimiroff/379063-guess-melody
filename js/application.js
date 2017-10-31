@@ -1,8 +1,9 @@
 import welcomeScreen from './welcome/welcome-screen';
-import newGameScreen from './game/game-screen';
+import GameScreen from './game/game-screen';
 import resultScreen from './result/result-screen';
 import winScreen from './winscreen/winscreen';
 import {initialState} from "./data/data";
+import Loader from "./loader";
 
 const ControllerId = {
   WELCOME: ``,
@@ -11,35 +12,28 @@ const ControllerId = {
 };
 
 const saveState = (state) => {
-  const stringified = JSON.stringify(state);
-  console.log(stringified);
-  return stringified;
+  return JSON.stringify(state);
 };
 
 const loadState = (dataString) => {
-console.log(`4: передано в распарс - ${dataString}`);
   try {
-    const parsed = JSON.parse(dataString);
-    console.log(`5: передаются данные для формирования вью - ${parsed}`);
-    return parsed;
+    return JSON.parse(dataString);
   } catch (e) {
-    console.log(e);
     return initialState;
   }
 };
 
-const routes = {
-  [ControllerId.WELCOME]: welcomeScreen,
-  [ControllerId.GAME]: newGameScreen,
-  [ControllerId.SCORE]: winScreen
-};
-
 export default class Application {
 
-  static init() {
+  static init(gameData) {
+    Application.routes = {
+      [ControllerId.WELCOME]: welcomeScreen,
+      [ControllerId.GAME]: new GameScreen(gameData),
+      [ControllerId.SCORE]: winScreen
+    };
+
     const hashChangeHandler = () => {
       const hashValue = location.hash.replace(`#`, ``);
-      console.log(`1: записывает в хэш - ${hashValue}`);
       const [id, data] = hashValue.split(`?`);
       this.changeHash(id, data);
     };
@@ -48,26 +42,21 @@ export default class Application {
   }
 
   static changeHash(id, data) {
-    const controller = routes[id];
-    console.log(`2: ищем контролер - ${controller}`);
-    console.log(`3: дата которая будет передана в контролер - ${data}`);
+    const controller = this.routes[id];
     if (controller) {
       controller.init(loadState(data));
     }
   }
 
   static showWelcome() {
-    //welcomeScreen.init();
     location.hash = ControllerId.WELCOME;
   }
 
   static showGame(state = initialState) {
-    //newGameScreen.init(state);
-    location.hash = `${ControllerId.GAME}?${saveState(state)}`;
+    Application.routes[ControllerId.GAME].init(state);
   }
 
   static showStats(state) {
-    //winScreen.init(state);
     location.hash = `${ControllerId.SCORE}?${saveState(state)}`;
   }
 
@@ -76,4 +65,5 @@ export default class Application {
   }
 }
 
-Application.init();
+Loader.loadData().
+    then((gameData) => Application.init(gameData));

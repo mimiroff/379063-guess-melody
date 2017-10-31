@@ -11,15 +11,15 @@ export default class GameView extends AbstractView {
     this.state = state;
   }
 
-  updateLevel(data) {
+  updateLevel(questionData) {
     let level;
-    if (data.isGenre) {
-      level = new GenreView(data);
+    if (questionData.type === `genre`) {
+      level = new GenreView(questionData);
       level.onCheckboxClick = (evt) => this.onCheckboxClick(evt);
       level.onControlClick = (evt) => this.onControlClick(evt);
       level.onSubmitClick = () => this.onSubmitClick();
     } else {
-      level = new ArtistView(data);
+      level = new ArtistView(questionData);
       level.onArtistListClick = (evt) => this.onArtistListClick(evt);
       level.onArtistControlClick = (evt) => this.onArtistControlClick(evt);
     }

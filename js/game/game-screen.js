@@ -1,39 +1,34 @@
 import GameView from './game-view';
-import {FAST_ANSWER_TIME, GAME_START_TIME} from '../data/data';
+import {FAST_ANSWER_TIME, GAME_START_TIME, initialState} from '../data/data';
 import App from '../application';
-import {getRandomInt, getMinutes, getSeconds} from '../util';
+import {getMinutes, getSeconds} from '../util';
 import GameModel from './game-model';
 
 class GameScreen {
-  constructor() {
-    this.model = new GameModel();
+  constructor(data) {
+    this.model = new GameModel(data);
     this.view = new GameView(this.model);
-    this.model.state.question = (getRandomInt(0, 2) === 0) ? this.model.getArtistLevel() : this.model.getGenreLevel();
   }
 
-  init(state = this.model) {
+  init(state = initialState) {
     this.model.update(state);
-    //this.model.reset();
+    this.model.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
     this.view.onArtistControlClick = (evt) => this.onArtistControlClick(evt);
     this.view.onCheckboxClick = (evt) => this.onCheckboxClick(evt);
     this.view.onControlClick = (evt) => this.onControlClick(evt);
     this.view.onSubmitClick = () => this.onSubmitClick();
-    this.changeLevel(this.model.state.question);
-    // if (getRandomInt(0, 2) === 0) {
-    //   this.changeLevel(this.model.getArtistLevel());
-    // } else {
-    //   this.changeLevel(this.model.getGenreLevel());
-    // }
+    this.changeLevel(this.model.data[this.model.level]);
     this.tick();
   }
 
   onArtistListClick(evt) {
     this.endTime = this.model.time;
+    const index = +evt.target.id.slice(evt.target.id.length - 1);
     if (evt.target.className === `main-answer-r`) {
-      if (evt.target.value === `true` && (this.startTime - this.endTime < FAST_ANSWER_TIME)) {
+      if (this.model.data[this.model.level - 1].answers[index].isCorrect && (this.startTime - this.endTime < FAST_ANSWER_TIME)) {
         this.model.addAnswer({answer: true, fast: true});
-      } else if (evt.target.value === `true`) {
+      } else if (this.model.data[this.model.level - 1].answers[index].isCorrect) {
         this.model.addAnswer({answer: true, fast: false});
       } else {
         this.model.addAnswer({answer: false, fast: false});
@@ -44,7 +39,7 @@ class GameScreen {
         this.stopTimer();
         App.showLoose(`noTries`);
       } else if (this.model.level < 10) {
-        this.changeLevel(this.model.getGenreLevel());
+        this.changeLevel(this.model.data[this.model.level]);
       } else {
         this.stopTimer();
         App.showStats(this.generateResult(this.countResult()));
@@ -67,9 +62,9 @@ class GameScreen {
 
   onCheckboxClick(evt) {
     if (evt.currentTarget.checked) {
-      this.model.stack.add(evt.currentTarget);
+      this.model.stack.add(+evt.currentTarget.id.slice(evt.target.id.length - 1));
     } else if (!evt.currentTarget.checked) {
-      this.model.stack.delete(evt.currentTarget);
+      this.model.stack.delete(+evt.currentTarget.id.slice(evt.target.id.length - 1));
     }
     if (this.model.stack.size > 0) {
       this.view.level.submitButton.removeAttribute(`disabled`);
@@ -80,13 +75,17 @@ class GameScreen {
 
   onSubmitClick() {
     let answers = [...this.model.stack.answers].map((it) => {
-      return it.value;
+      return this.model.data[this.model.level - 1].answers[it].genre;
+    });
+    const genre = this.model.data[this.model.level - 1].genre;
+    const answerTypes = answers.map((it) => {
+      return it === genre;
     });
     this.endTime = this.model.time;
-    if (answers.includes(`false`)) {
+    if (answerTypes.includes(false)) {
       this.model.addAnswer({answer: false, fast: false});
       this.model.addMistake();
-    } else if (!answers.includes(`false`) && (this.startTime - this.endTime < FAST_ANSWER_TIME)) {
+    } else if (!answerTypes.includes(false) && (this.startTime - this.endTime < FAST_ANSWER_TIME)) {
       this.model.addAnswer({answer: true, fast: true});
     } else {
       this.model.addAnswer({answer: true, fast: false});
@@ -96,7 +95,7 @@ class GameScreen {
       this.stopTimer();
       App.showLoose(`noTries`);
     } else if (this.model.level < 10) {
-      this.changeLevel(this.model.getArtistLevel());
+      this.changeLevel(this.model.data[this.model.level]);
     } else {
       this.stopTimer();
       App.showStats(this.generateResult(this.countResult()));
@@ -124,7 +123,7 @@ class GameScreen {
   }
 
   changeLevel(question) {
-    if (question.isGenre) {
+    if (question.type === `genre`) {
       this.model.stack.clear();
     }
     this.view.updateLevel(question);
@@ -258,4 +257,4 @@ class GameScreen {
   }
 }
 
-export default new GameScreen();
+export default GameScreen;

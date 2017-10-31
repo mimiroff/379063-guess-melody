@@ -16,8 +16,8 @@ const generateAnswerTemplate = (data) => {
               </div>
             </div>
           </div>
-          <input type="checkbox" name="answer" value="${it.isCorrect}" id="a-${i + 1}">
-          <label class="genre-answer-check" for="a-${i + 1}"></label>
+          <input type="checkbox" name="answer" value="answer-${i}" id="a-${i}">
+          <label class="genre-answer-check" for="a-${i}"></label>
         </div>`);
   });
   return templates.join(``);
@@ -32,7 +32,7 @@ export default class GenreView extends AbstractView {
   get template() {
     return `<section class="main main--level main--level-genre">
     <div class="main-wrap">
-      <h2 class="title">Выберите ${this.data.genre} треки</h2>
+      <h2 class="title">${this.data.question}</h2>
       <form class="genre">
         ${generateAnswerTemplate(this.data)}
         <button class="genre-answer-send" type="submit">Ответить</button>
