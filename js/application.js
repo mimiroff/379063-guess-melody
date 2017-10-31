@@ -65,5 +65,4 @@ export default class Application {
   }
 }
 
-Loader.loadData().
-    then((gameData) => Application.init(gameData));
+Loader.loadData().then((gameData) => Loader.prefetch(gameData)).then((gameData) => Application.init(gameData));

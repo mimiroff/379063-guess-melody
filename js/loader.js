@@ -7,5 +7,19 @@ export default class Loader {
       return response.json();
     });
   }
+
+  static prefetch(data) {
+    data.map((it) => {
+      if (it.type === `artist`) {
+        fetch(it.src);
+      } else {
+        it.answers.map((item) => {
+          fetch(item.src);
+        });
+      }
+    });
+    return data;
+  }
+
 }
 

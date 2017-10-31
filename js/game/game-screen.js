@@ -12,6 +12,7 @@ class GameScreen {
 
   init(state = initialState) {
     this.model.update(state);
+    console.dir(this.model.data);
     this.model.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
     this.view.onArtistControlClick = (evt) => this.onArtistControlClick(evt);
