@@ -1,11 +1,9 @@
 
-import {
-  generateArtistQuestion, generateGenreQuestion, tick, reset, nextLevel, addMistake, addAnswer,
-  answersStack, resultScreenData
-} from "../data/data";
+import {tick, reset, nextLevel, addMistake, addAnswer, answersStack, resultScreenData} from "../data/data";
 
 export default class GameModel {
-  constructor(stack = answersStack, stats = resultScreenData) {
+  constructor(data, stack = answersStack, stats = resultScreenData.win) {
+    this.data = data;
     this.stack = stack;
     this.stats = stats;
   }
@@ -32,18 +30,10 @@ export default class GameModel {
   }
 
   reset() {
+    this.stats = resultScreenData.win;
     this.update(reset(this.state));
   }
 
-  getArtistLevel() {
-    this.data = generateArtistQuestion();
-    return this.data;
-  }
-
-  getGenreLevel() {
-    this.data = generateGenreQuestion();
-    return this.data;
-  }
 
   get time() {
     return this.state.time;

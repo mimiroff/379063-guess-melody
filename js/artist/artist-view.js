@@ -7,11 +7,11 @@ const generateAnswerTemplate = (data) => {
 
   data.answers.map((it, i) => {
     templates.push(`<div class="main-answer-wrapper">
-          <input class="main-answer-r" type="radio" id="answer-${i + 1}" name="answer" value="${it.isCorrect}"/>
-          <label class="main-answer" for="answer-${i + 1}">
-            <img class="main-answer-preview" src="${it.image}"
-                 alt="${it.artist}" width="134" height="134">
-            ${it.artist}
+          <input class="main-answer-r" type="radio" id="answer-${i}" name="answer" value="answer-${i}"/>
+          <label class="main-answer" for="answer-${i}">
+            <img class="main-answer-preview" src="${it.image.url}"
+                 alt="${it.title}" width="${it.image.width}" height="${it.image.height}">
+            ${it.title}
           </label>
         </div>`);
   });
@@ -26,7 +26,7 @@ export default class ArtistView extends AbstractView {
   get template() {
     return `<section class="main main--level main--level-artist">
     <div class="main-wrap">
-      <h2 class="title main-title">Кто исполняет эту песню?</h2>
+      <h2 class="title main-title">${this.data.question}</h2>
       <div class="player-wrapper">
         <div class="player">
           <audio src="${this.data.src}" autoplay></audio>
