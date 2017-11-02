@@ -3,6 +3,7 @@ import {FAST_ANSWER_TIME, GAME_START_TIME, initialState} from '../data/data';
 import App from '../application';
 import {getMinutes, getSeconds} from '../util';
 import GameModel from './game-model';
+import Loader from '../loader';
 
 class GameScreen {
   constructor(data) {
@@ -42,7 +43,7 @@ class GameScreen {
         this.changeLevel(this.model.data[this.model.level]);
       } else {
         this.stopTimer();
-        App.showStats(this.generateResult(this.countResult()));
+        this.generateResult(this.countResult());
       }
     }
   }
@@ -98,7 +99,7 @@ class GameScreen {
       this.changeLevel(this.model.data[this.model.level]);
     } else {
       this.stopTimer();
-      App.showStats(this.generateResult(this.countResult()));
+      this.generateResult(this.countResult());
     }
   }
 
@@ -172,13 +173,11 @@ class GameScreen {
     return result;
   }
 
-  generateResult(selfResults, othersResults) {
+  generateResult(selfResults) {
     const score = selfResults.score;
     const fast = selfResults.fast;
     const mistakes = selfResults.mistakes;
     const timePast = selfResults.timePast;
-
-    const results = othersResults ? othersResults : [];
     const ENDINGS = {
       minutes: ``,
       seconds: ``,
@@ -187,7 +186,7 @@ class GameScreen {
       mistakes: `ок`,
       players: `ов`
     };
-
+    let results = [];
     let place;
     let players;
     let percent;
@@ -202,58 +201,68 @@ class GameScreen {
       }
     };
 
-    results.push(score);
-    results.sort(asc);
-    place = results.length - results.indexOf(score);
-    players = results.length;
-    percent = Math.round(((players - place) / players) * 100);
+    const compareResults = () => {
+      results.push(score);
+      results.sort(asc);
+      place = results.length - results.indexOf(score);
+      players = results.length;
+      percent = Math.round(((players - place) / players) * 100);
+    };
 
-    if (players.toString().lastIndexOf(`1`) > -1 && players !== 11) {
-      ENDINGS.players = `а`;
-    }
+    const checkEndings = () => {
+      if (players === 1 || players === 21 || players === 31 || players === 41 || players === 51) {
+        ENDINGS.players = `а`;
+      }
 
-    if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`1`, 1)) {
-      ENDINGS.minutes = `у`;
-    } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`2`, 1)) {
-      ENDINGS.minutes = `ы`;
-    } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`3`, 1)) {
-      ENDINGS.minutes = `ы`;
-    } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`4`, 1)) {
-      ENDINGS.minutes = `ы`;
-    }
+      if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`1`, 1)) {
+        ENDINGS.minutes = `у`;
+      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`2`, 1)) {
+        ENDINGS.minutes = `ы`;
+      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`3`, 1)) {
+        ENDINGS.minutes = `ы`;
+      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`4`, 1)) {
+        ENDINGS.minutes = `ы`;
+      }
 
-    if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`1`, 1)) {
-      ENDINGS.seconds = `у`;
-    } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`2`, 1)) {
-      ENDINGS.seconds = `ы`;
-    } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`3`, 1)) {
-      ENDINGS.seconds = `ы`;
-    } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`4`, 1)) {
-      ENDINGS.seconds = `ы`;
-    }
+      if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`1`, 1)) {
+        ENDINGS.seconds = `у`;
+      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`2`, 1)) {
+        ENDINGS.seconds = `ы`;
+      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`3`, 1)) {
+        ENDINGS.seconds = `ы`;
+      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`4`, 1)) {
+        ENDINGS.seconds = `ы`;
+      }
 
-    if (score === 1) {
-      ENDINGS.score = ``;
-    } else if (score === 2 || score === 3 || score === 4) {
-      ENDINGS.score = `а`;
-    }
+      if (score === 1) {
+        ENDINGS.score = ``;
+      } else if (score === 2 || score === 3 || score === 4) {
+        ENDINGS.score = `а`;
+      }
 
-    if ((fast < 10 || fast > 20) && fast.toString().includes(`1`, 1)) {
-      ENDINGS.fast = `ый`;
-    }
+      if ((fast === 1)) {
+        ENDINGS.fast = `ый`;
+      }
 
-    if (mistakes === 1) {
-      ENDINGS.mistakes = `ку`;
-    } else if (mistakes === 2 || mistakes === 3) {
-      ENDINGS.mistakes = `ки`;
-    }
+      if (mistakes === 1) {
+        ENDINGS.mistakes = `ку`;
+      } else if (mistakes === 2 || mistakes === 3) {
+        ENDINGS.mistakes = `ки`;
+      }
+    };
+    const generateStats = () => {
+      this.model.stats.statistics = `За ${getMinutes(timePast)} минут${ENDINGS.minutes} и ${getSeconds(timePast)} секунд${ENDINGS.seconds} вы набрали<br/>
+      ${score} балл${ENDINGS.score} (${fast} быстр${ENDINGS.fast})<br/>
+      совершив ${mistakes} ошиб${ENDINGS.mistakes}`;
+      this.model.stats.comparison = `Вы заняли ${place}-ое место из ${players} игрок${ENDINGS.players}. Это лучше чем у ${percent}% игроков`;
+      App.showStats(this.model.stats);
+    };
 
-    this.model.stats.statistics = `За ${getMinutes(timePast)} минут${ENDINGS.minutes} и ${getSeconds(timePast)} секунд${ENDINGS.seconds} вы набрали<br/>
-    ${score} балл${ENDINGS.score} (${fast} быстр${ENDINGS.fast})<br/>
-    совершив ${mistakes} ошиб${ENDINGS.mistakes}`;
-    this.model.stats.comparison = `Вы заняли ${place}-ое место из ${players} игрок${ENDINGS.players}. Это лучше чем у ${percent}% игроков`;
-
-    return this.model.stats;
+    Loader.loadResults().then((response) => {
+      response.map((it) => {
+        results.push(it.score);
+      });
+    }).then(compareResults).then(checkEndings).then(generateStats).then(() => Loader.saveResults(selfResults));
   }
 }
 

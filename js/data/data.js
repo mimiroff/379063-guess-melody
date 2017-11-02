@@ -1,6 +1,6 @@
 
 export const GAME_START_TIME = 300;
-export const FAST_ANSWER_TIME = 20;
+export const FAST_ANSWER_TIME = 30;
 
 const initialState = {
   mistakes: 0,
@@ -80,6 +80,18 @@ const resultScreenData = {
     statistics: `У вас закончились все попытки.<br/>
     Ничего, повезёт в следующий раз!`,
     replayTitle: `Попробовать ещё раз`
+  },
+  noConnection: {
+    title: `Приносим извинения!`,
+    statistics: `Невозможно загрузить данные.<br/>
+    Работа сервера будет восстановлена<br/> 
+    в ближайшее время`,
+    replayTitle: ``
+  },
+  loading: {
+    title: `Загружается...`,
+    statistics: `Игра скоро запустится!`,
+    replayTitle: ``
   }
 };
 

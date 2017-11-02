@@ -4,6 +4,7 @@ import resultScreen from './result/result-screen';
 import winScreen from './winscreen/winscreen';
 import {initialState} from "./data/data";
 import Loader from "./loader";
+import {showScreen} from "./util";
 
 const ControllerId = {
   WELCOME: ``,
@@ -17,7 +18,8 @@ const saveState = (state) => {
 
 const loadState = (dataString) => {
   try {
-    return JSON.parse(dataString);
+    let parsed = JSON.parse(dataString);
+    return parsed;
   } catch (e) {
     return initialState;
   }
@@ -53,7 +55,7 @@ export default class Application {
   }
 
   static showGame(state = initialState) {
-    Application.routes[ControllerId.GAME].init(state);
+    location.hash = `${ControllerId.GAME}?${saveState(state)}`;
   }
 
   static showStats(state) {
@@ -65,4 +67,6 @@ export default class Application {
   }
 }
 
-Loader.loadData().then((gameData) => Loader.prefetch(gameData)).then((gameData) => Application.init(gameData));
+Application.showLoose(`loading`);
+
+Loader.loadData().then((gameData) => Application.init(gameData)).then(Application.showWelcome);
