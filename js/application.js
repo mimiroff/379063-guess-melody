@@ -4,25 +4,11 @@ import resultScreen from './result/result-screen';
 import winScreen from './winscreen/winscreen';
 import {initialState} from "./data/data";
 import Loader from "./loader";
-import {showScreen} from "./util";
 
 const ControllerId = {
   WELCOME: ``,
   GAME: `game`,
   SCORE: `score`
-};
-
-const saveState = (state) => {
-  return JSON.stringify(state);
-};
-
-const loadState = (dataString) => {
-  try {
-    let parsed = JSON.parse(dataString);
-    return parsed;
-  } catch (e) {
-    return initialState;
-  }
 };
 
 export default class Application {
@@ -46,7 +32,7 @@ export default class Application {
   static changeHash(id, data) {
     const controller = this.routes[id];
     if (controller) {
-      controller.init(loadState(data));
+      controller.init(this.loadState(data));
     }
   }
 
@@ -55,18 +41,30 @@ export default class Application {
   }
 
   static showGame(state = initialState) {
-    location.hash = `${ControllerId.GAME}?${saveState(state)}`;
+    location.hash = `${ControllerId.GAME}?${this.saveState(state)}`;
   }
 
   static showStats(state) {
-    location.hash = `${ControllerId.SCORE}?${saveState(state)}`;
+    location.hash = `${ControllerId.SCORE}?${this.saveState(state)}`;
   }
 
   static showLoose(state) {
     resultScreen.init(state);
   }
+
+  static saveState(state) {
+    return JSON.stringify(state);
+  }
+
+  static loadState(dataString) {
+    try {
+      return JSON.parse(dataString);
+    } catch (e) {
+      return initialState;
+    }
+  };
 }
 
 Application.showLoose(`loading`);
 
-Loader.loadData().then((gameData) => Application.init(gameData)).then(Application.showWelcome);
+Loader.loadData().then((gameData) => Application.init(gameData)).then(Application.showWelcome).catch(Application.showLoose(`noConnection`));
