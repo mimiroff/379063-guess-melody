@@ -3,7 +3,6 @@ import GameScreen from './game/game-screen';
 import resultScreen from './result/result-screen';
 import winScreen from './winscreen/winscreen';
 import {initialState} from "./data/data";
-import Loader from "./loader";
 
 const ControllerId = {
   WELCOME: ``,
@@ -40,8 +39,8 @@ export default class Application {
     location.hash = ControllerId.WELCOME;
   }
 
-  static showGame(state = initialState) {
-    location.hash = `${ControllerId.GAME}?${this.saveState(state)}`;
+  static showGame() {
+    location.hash = ControllerId.GAME;
   }
 
   static showStats(state) {
@@ -62,9 +61,6 @@ export default class Application {
     } catch (e) {
       return initialState;
     }
-  };
+  }
 }
 
-Application.showLoose(`loading`);
-
-Loader.loadData().then((gameData) => Application.init(gameData)).then(Application.showWelcome).catch(Application.showLoose(`noConnection`));

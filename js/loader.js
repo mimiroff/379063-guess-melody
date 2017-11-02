@@ -1,4 +1,3 @@
-import App from './application';
 const SERVER_URL = `https://es.dump.academy/guess-melody`;
 
 const DEFAULT_NAME = `id379063`;

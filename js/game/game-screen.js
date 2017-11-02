@@ -1,5 +1,5 @@
 import GameView from './game-view';
-import {FAST_ANSWER_TIME, GAME_START_TIME, initialState} from '../data/data';
+import {FAST_ANSWER_TIME, GAME_START_TIME} from '../data/data';
 import App from '../application';
 import {getMinutes, getSeconds} from '../util';
 import GameModel from './game-model';
@@ -11,7 +11,7 @@ class GameScreen {
     this.view = new GameView(this.model);
   }
 
-  init(state = initialState) {
+  init(state) {
     this.model.update(state);
     this.model.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
@@ -20,8 +20,12 @@ class GameScreen {
     this.view.onControlClick = (evt) => this.onControlClick(evt);
     this.view.onSubmitClick = () => this.onSubmitClick();
     this.changeLevel(this.model.data[this.model.level]);
+    if (this.timer) {
+      delete this.timer;
+    }
     this.tick();
   }
+
 
   onArtistListClick(evt) {
     this.endTime = this.model.time;
@@ -39,7 +43,7 @@ class GameScreen {
       if (this.model.mistakes > 3) {
         this.stopTimer();
         App.showLoose(`noTries`);
-      } else if (this.model.level < 10) {
+      } else if (this.model.level < 2) {
         this.changeLevel(this.model.data[this.model.level]);
       } else {
         this.stopTimer();
@@ -95,7 +99,7 @@ class GameScreen {
     if (this.model.mistakes > 3) {
       this.stopTimer();
       App.showLoose(`noTries`);
-    } else if (this.model.level < 10) {
+    } else if (this.model.level < 3) {
       this.changeLevel(this.model.data[this.model.level]);
     } else {
       this.stopTimer();
@@ -135,7 +139,6 @@ class GameScreen {
   tick() {
     this.model.tick();
     this.view.updateHeader(this.model.time);
-
     this.timer = setTimeout(() => this.tick(), 1000);
     if (this.model.time === 29) {
       this.view.colorizeHeader();
@@ -148,6 +151,7 @@ class GameScreen {
 
   stopTimer() {
     clearTimeout(this.timer);
+    delete this.timer;
   }
 
   countResult() {
