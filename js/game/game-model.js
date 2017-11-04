@@ -1,5 +1,5 @@
 
-import {tick, reset, nextLevel, addMistake, addAnswer, answersStack, resultScreenData} from "../data/data";
+import {tick, reset, nextLevel, addMistake, addAnswer, answersStack, resultScreenData} from '../data/data';
 
 export default class GameModel {
   constructor(data, stack = answersStack, stats = resultScreenData.win) {

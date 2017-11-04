@@ -1,7 +1,7 @@
 import App from '../application';
-import ResultView from "./result-view";
-import {showScreen} from "../util";
-import {resultScreenData} from "../data/data";
+import ResultView from './result-view';
+import {showScreen} from '../util';
+import {resultScreenData} from '../data/data';
 
 
 class ResultScreen {
@@ -19,4 +19,4 @@ class ResultScreen {
   }
 }
 
-export default new ResultScreen();
+export default ResultScreen;

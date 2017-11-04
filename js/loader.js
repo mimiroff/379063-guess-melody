@@ -1,11 +1,10 @@
-import App from './application';
 const SERVER_URL = `https://es.dump.academy/guess-melody`;
 
 const DEFAULT_NAME = `id379063`;
 
 export default class Loader {
   static loadData() {
-    return fetch(`${SERVER_URL}/questions`).catch(App.showLoose(`noConnection`)).then((response) => {
+    return fetch(`${SERVER_URL}/questions`).then((response) => {
       return response.json();
     });
   }

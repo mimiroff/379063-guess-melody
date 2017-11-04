@@ -17,4 +17,4 @@ class WinScreen {
   }
 }
 
-export default new WinScreen();
+export default WinScreen;

@@ -1,8 +1,10 @@
-import {getMinutes, getSeconds} from "../util";
-import AbstractView from "../view";
+import {getMinutes, getSeconds} from '../util';
+import AbstractView from '../view';
+import {GAME_START_TIME} from '../data/data';
 
 const mistake = `<img class="main-mistake" src="img/wrong-answer.png" width="35" height="49">`;
-const fullLength = 2 * Math.PI * 370;
+const TIMER_RADIUS = 370;
+const fullLength = 2 * Math.PI * TIMER_RADIUS;
 
 
 export default class Header extends AbstractView {
@@ -16,7 +18,7 @@ export default class Header extends AbstractView {
          cx="390" cy="390" r="370"
          class="timer-line"
          stroke-dasharray="${fullLength}"
-         stroke-dashoffset="${fullLength / 300 * (300 - this.state.time)}"
+         stroke-dashoffset="${fullLength / GAME_START_TIME * (GAME_START_TIME - this.state.time)}"
          style="filter: url(.#blur); transform: rotate(-90deg) scaleY(-1); transform-origin: center" />
 
        <div class="timer-value" xmlns="http://www.w3.org/1999/xhtml">
@@ -41,7 +43,7 @@ export default class Header extends AbstractView {
     this.minutes.textContent = getMinutes(time);
     this.seconds.textContent = getSeconds(time);
     this.circleElement.setAttribute(`stroke-dasharray`, `${fullLength}`);
-    this.circleElement.setAttribute(`stroke-dashoffset`, `${fullLength / 300 * (300 - time)}`);
+    this.circleElement.setAttribute(`stroke-dashoffset`, `${fullLength / GAME_START_TIME * (GAME_START_TIME - time)}`);
   }
 
   draw() {

@@ -1,8 +1,4 @@
 
-export const getRandomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
 export const createElement = (template) => {
   const element = document.createElement(`template`);
   element.innerHTML = template;

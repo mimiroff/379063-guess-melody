@@ -1,6 +1,9 @@
 
 export const GAME_START_TIME = 300;
 export const FAST_ANSWER_TIME = 30;
+export const MAX_MISTAKES = 3;
+export const MAX_LEVEL = 10;
+export const WARNING_TIME = 30;
 
 const initialState = {
   mistakes: 0,

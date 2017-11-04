@@ -1,5 +1,5 @@
 import GameView from './game-view';
-import {FAST_ANSWER_TIME, GAME_START_TIME, initialState} from '../data/data';
+import {FAST_ANSWER_TIME, GAME_START_TIME, MAX_LEVEL, MAX_MISTAKES, WARNING_TIME} from '../data/data';
 import App from '../application';
 import {getMinutes, getSeconds} from '../util';
 import GameModel from './game-model';
@@ -11,7 +11,7 @@ class GameScreen {
     this.view = new GameView(this.model);
   }
 
-  init(state = initialState) {
+  init(state) {
     this.model.update(state);
     this.model.reset();
     this.view.onArtistListClick = (evt) => this.onArtistListClick(evt);
@@ -22,6 +22,7 @@ class GameScreen {
     this.changeLevel(this.model.data[this.model.level]);
     this.tick();
   }
+
 
   onArtistListClick(evt) {
     this.endTime = this.model.time;
@@ -36,10 +37,10 @@ class GameScreen {
         this.model.addMistake();
       }
 
-      if (this.model.mistakes > 3) {
+      if (this.model.mistakes > MAX_MISTAKES) {
         this.stopTimer();
         App.showLoose(`noTries`);
-      } else if (this.model.level < 10) {
+      } else if (this.model.level < MAX_LEVEL) {
         this.changeLevel(this.model.data[this.model.level]);
       } else {
         this.stopTimer();
@@ -92,10 +93,10 @@ class GameScreen {
       this.model.addAnswer({answer: true, fast: false});
     }
 
-    if (this.model.mistakes > 3) {
+    if (this.model.mistakes > MAX_MISTAKES) {
       this.stopTimer();
       App.showLoose(`noTries`);
-    } else if (this.model.level < 10) {
+    } else if (this.model.level < MAX_LEVEL) {
       this.changeLevel(this.model.data[this.model.level]);
     } else {
       this.stopTimer();
@@ -135,9 +136,8 @@ class GameScreen {
   tick() {
     this.model.tick();
     this.view.updateHeader(this.model.time);
-
     this.timer = setTimeout(() => this.tick(), 1000);
-    if (this.model.time === 29) {
+    if (this.model.time === WARNING_TIME) {
       this.view.colorizeHeader();
     }
     if (this.model.time === 0) {
@@ -148,6 +148,7 @@ class GameScreen {
 
   stopTimer() {
     clearTimeout(this.timer);
+    delete this.timer;
   }
 
   countResult() {
@@ -258,10 +259,14 @@ class GameScreen {
       App.showStats(this.model.stats);
     };
 
-    Loader.loadResults().then((response) => {
-      response.map((it) => {
-        results.push(it.score);
-      });
+    Loader.loadResults().then((response, reject) => {
+      if (reject) {
+        results.push(selfResults);
+      } else {
+        response.map((it) => {
+          results.push(it.score);
+        });
+      }
     }).then(compareResults).then(checkEndings).then(generateStats).then(() => Loader.saveResults(selfResults));
   }
 }

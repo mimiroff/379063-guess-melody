@@ -1,13 +1,5 @@
 import AbstractView from '../view';
 
-// export const drawComparison = (data) => {
-//   let comparison = ``;
-//   if (data.comparison) {
-//     comparison = `<span class="main-comparison">${data.comparison}</span>`;
-//   }
-//   return comparison;
-// };
-
 export default class ResultView extends AbstractView {
   constructor(data) {
     super();
