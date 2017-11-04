@@ -1,66 +1,38 @@
 import welcomeScreen from './welcome/welcome-screen';
-import GameScreen from './game/game-screen';
-import resultScreen from './result/result-screen';
+import gameScreen from './game/game-screen';
+import ResultScreen from './result/result-screen';
 import winScreen from './winscreen/winscreen';
 import {initialState} from "./data/data";
-
-const ControllerId = {
-  WELCOME: ``,
-  GAME: `game`,
-  SCORE: `score`
-};
 
 export default class Application {
 
   static init(gameData) {
+    Application.gameData = gameData;
     Application.routes = {
-      [ControllerId.WELCOME]: welcomeScreen,
-      [ControllerId.GAME]: new GameScreen(gameData),
-      [ControllerId.SCORE]: winScreen
+      Welcome: welcomeScreen,
+      Game: gameScreen,
+      Score: winScreen
     };
-
-    const hashChangeHandler = () => {
-      const hashValue = location.hash.replace(`#`, ``);
-      const [id, data] = hashValue.split(`?`);
-      this.changeHash(id, data);
-    };
-    window.onhashchange = hashChangeHandler;
-    hashChangeHandler();
-  }
-
-  static changeHash(id, data) {
-    const controller = this.routes[id];
-    if (controller) {
-      controller.init(this.loadState(data));
-    }
   }
 
   static showWelcome() {
-    location.hash = ControllerId.WELCOME;
+    const screen = new Application.routes.Welcome();
+    screen.init();
   }
 
   static showGame() {
-    location.hash = ControllerId.GAME;
+    const screen = new Application.routes.Game(Application.gameData);
+    screen.init(initialState);
   }
 
   static showStats(state) {
-    location.hash = `${ControllerId.SCORE}?${this.saveState(state)}`;
+    const screen = new Application.routes.Score();
+    screen.init(state);
   }
 
   static showLoose(state) {
-    resultScreen.init(state);
-  }
-
-  static saveState(state) {
-    return JSON.stringify(state);
-  }
-
-  static loadState(dataString) {
-    try {
-      return JSON.parse(dataString);
-    } catch (e) {
-      return initialState;
-    }
+    const screen = new ResultScreen();
+    screen.init(state);
   }
 }
 

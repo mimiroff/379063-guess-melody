@@ -1,7 +1,7 @@
 import AbstractView from '../view';
 import ArtistView from '../artist/artist-view';
-import {showScreen} from "../util";
-import GenreView from "../genre/genre-view";
+import {showScreen} from '../util';
+import GenreView from '../genre/genre-view';
 import Header from '../header/header-view';
 
 

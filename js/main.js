@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+import 'whatwg-fetch';
 import App from './application';
 import Loader from './loader';
 
