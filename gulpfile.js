@@ -27,10 +27,11 @@ gulp.task('style', function () {
       autoprefixer({
         browsers: [
           'last 1 version',
-          'last 2 Chrome versions',
-          'last 2 Firefox versions',
-          'last 2 Opera versions',
-          'last 2 Edge versions'
+          'last 4 Chrome versions',
+          'last 4 Firefox versions',
+          'last 4 Opera versions',
+          'last 4 Edge versions',
+          'ie >= 10'
         ]
       }),
       mqpacker({sort: true})

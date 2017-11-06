@@ -215,24 +215,18 @@ class GameScreen {
         ENDINGS.players = `а`;
       }
 
-      if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`1`, 1)) {
+      if (getMinutes(timePast).includes(`1`, 1)) {
         ENDINGS.minutes = `у`;
-      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`2`, 1)) {
-        ENDINGS.minutes = `ы`;
-      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`3`, 1)) {
-        ENDINGS.minutes = `ы`;
-      } else if ((timePast / 60 < 10 || timePast / 60 > 20) && getMinutes(timePast).includes(`4`, 1)) {
+      } else if (getMinutes(timePast).includes(`2`, 1) || getMinutes(timePast).includes(`3`, 1) || getMinutes(timePast).includes(`4`, 1)) {
         ENDINGS.minutes = `ы`;
       }
 
-      if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`1`, 1)) {
-        ENDINGS.seconds = `у`;
-      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`2`, 1)) {
-        ENDINGS.seconds = `ы`;
-      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`3`, 1)) {
-        ENDINGS.seconds = `ы`;
-      } else if ((timePast % 60 < 10 || timePast % 60 > 20) && getSeconds(timePast).includes(`4`, 1)) {
-        ENDINGS.seconds = `ы`;
+      if (timePast % 60 < 10 || timePast % 60 > 20) {
+        if (getSeconds(timePast).includes(`1`, 1)) {
+          ENDINGS.seconds = `у`;
+        } else if (getSeconds(timePast).includes(`2`, 1) || getSeconds(timePast).includes(`3`, 1) || getSeconds(timePast).includes(`4`, 1)) {
+          ENDINGS.seconds = `ы`;
+        }
       }
 
       if (score === 1) {
@@ -251,6 +245,7 @@ class GameScreen {
         ENDINGS.mistakes = `ки`;
       }
     };
+
     const generateStats = () => {
       this.model.stats.statistics = `За ${getMinutes(timePast)} минут${ENDINGS.minutes} и ${getSeconds(timePast)} секунд${ENDINGS.seconds} вы набрали<br/>
       ${score} балл${ENDINGS.score} (${fast} быстр${ENDINGS.fast})<br/>
@@ -259,14 +254,12 @@ class GameScreen {
       App.showStats(this.model.stats);
     };
 
-    Loader.loadResults().then((response, reject) => {
-      if (reject) {
-        results.push(selfResults);
-      } else {
-        response.map((it) => {
+    Loader.loadResults().then((response) => {
+      response.map((it) => {
+        if (typeof it.score === `number`) {
           results.push(it.score);
-        });
-      }
+        }
+      });
     }).then(compareResults).then(checkEndings).then(generateStats).then(() => Loader.saveResults(selfResults));
   }
 }

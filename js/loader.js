@@ -10,7 +10,16 @@ export default class Loader {
   }
 
   static loadResults(name = DEFAULT_NAME) {
-    return fetch(`${SERVER_URL}/stats/${name}`).then((res) => res.json());
+    return fetch(`${SERVER_URL}/stats/${name}`).then((res) => res.json()).catch(() => {
+      return [
+        {
+          score: null,
+          fast: null,
+          mistakes: null,
+          timePast: null
+        }
+      ];
+    });
   }
 
   static saveResults(data, name = DEFAULT_NAME) {
