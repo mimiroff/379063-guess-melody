@@ -179,14 +179,16 @@ class GameScreen {
     const fast = selfResults.fast;
     const mistakes = selfResults.mistakes;
     const timePast = selfResults.timePast;
-    const ENDINGS = {
-      minutes: ``,
-      seconds: ``,
-      score: `ов`,
-      fast: `ых`,
-      mistakes: `ок`,
-      players: `ов`
+
+    const DECLINES = {
+      minutes: [`минуту`, `минуты`, `минут`],
+      seconds: [`секунду`, `секунды`, `секунд`],
+      mistakes: [`ошибку`, `ошибки`, `ошибок`],
+      scores: [`балл`, `балла`, `баллов`],
+      fastAnswers: [`быстрый`, `быстрых`, `быстрых`],
+      players: [`игрока`, `игроков`, `игроков`]
     };
+
     let results = [];
     let place;
     let players;
@@ -210,47 +212,30 @@ class GameScreen {
       percent = Math.round(((players - place) / players) * 100);
     };
 
-    const checkEndings = () => {
-      if (players === 1 || players === 21 || players === 31 || players === 41 || players === 51) {
-        ENDINGS.players = `а`;
-      }
-
-      if (getMinutes(timePast).includes(`1`, 1)) {
-        ENDINGS.minutes = `у`;
-      } else if (getMinutes(timePast).includes(`2`, 1) || getMinutes(timePast).includes(`3`, 1) || getMinutes(timePast).includes(`4`, 1)) {
-        ENDINGS.minutes = `ы`;
-      }
-
-      if (timePast % 60 < 10 || timePast % 60 > 20) {
-        if (getSeconds(timePast).includes(`1`, 1)) {
-          ENDINGS.seconds = `у`;
-        } else if (getSeconds(timePast).includes(`2`, 1) || getSeconds(timePast).includes(`3`, 1) || getSeconds(timePast).includes(`4`, 1)) {
-          ENDINGS.seconds = `ы`;
+    const numDecline = (num, nominative, genitiveSingular, genitivePlural) => {
+      num = Math.abs(num);
+      if (num > 10 && (Math.round((num % 100) / 10)) === 1) {
+        return genitivePlural;
+      } else {
+        switch (num % 10) {
+          case 1:
+            return nominative;
+          case 2:
+          case 3:
+          case 4:
+            return genitiveSingular;
+          default:
+            return genitivePlural;
         }
-      }
-
-      if (score === 1) {
-        ENDINGS.score = ``;
-      } else if (score === 2 || score === 3 || score === 4) {
-        ENDINGS.score = `а`;
-      }
-
-      if ((fast === 1)) {
-        ENDINGS.fast = `ый`;
-      }
-
-      if (mistakes === 1) {
-        ENDINGS.mistakes = `ку`;
-      } else if (mistakes === 2 || mistakes === 3) {
-        ENDINGS.mistakes = `ки`;
       }
     };
 
     const generateStats = () => {
-      this.model.stats.statistics = `За ${getMinutes(timePast)} минут${ENDINGS.minutes} и ${getSeconds(timePast)} секунд${ENDINGS.seconds} вы набрали<br/>
-      ${score} балл${ENDINGS.score} (${fast} быстр${ENDINGS.fast})<br/>
-      совершив ${mistakes} ошиб${ENDINGS.mistakes}`;
-      this.model.stats.comparison = `Вы заняли ${place}-ое место из ${players} игрок${ENDINGS.players}. Это лучше чем у ${percent}% игроков`;
+      this.model.stats.statistics = `За ${getMinutes(timePast)} ${numDecline(+getMinutes(timePast), ...DECLINES.minutes)} 
+      и ${getSeconds(timePast)} ${numDecline(+getSeconds(timePast), ...DECLINES.seconds)} вы набрали<br/>
+      ${score} ${numDecline(score, ...DECLINES.scores)} (${fast} ${numDecline(fast, ...DECLINES.fastAnswers)})<br/>
+      совершив ${mistakes} ${numDecline(mistakes, ...DECLINES.mistakes)}`;
+      this.model.stats.comparison = `Вы заняли ${place}-ое место из ${players} ${numDecline(players, ...DECLINES.players)}. Это лучше чем у ${percent}% игроков`;
       App.showStats(this.model.stats);
     };
 
@@ -260,7 +245,7 @@ class GameScreen {
           results.push(it.score);
         }
       });
-    }).then(compareResults).then(checkEndings).then(generateStats).then(() => Loader.saveResults(selfResults));
+    }).then(compareResults).then(generateStats).then(() => Loader.saveResults(selfResults));
   }
 }
 
